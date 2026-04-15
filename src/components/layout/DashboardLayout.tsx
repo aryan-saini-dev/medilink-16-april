@@ -48,18 +48,18 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col w-full bg-background">
-      <header className="h-14 flex items-center px-6 gap-4 border-b-2 border-border bg-background">
+      <header className="h-14 flex items-center px-6 gap-4 border-b border-border bg-card">
         <Link to="/dashboard/events" className="mr-6 shrink-0">
           <Logo size="sm" />
         </Link>
         <div className="flex-1 flex items-center h-full overflow-x-auto">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {allItems.map((item) => (
               <NavLink
                 key={item.url}
                 to={item.url}
-                className="px-4 py-2 text-sm font-medium text-muted-foreground rounded-full border-2 border-transparent transition-all duration-300 ease-bounce hover:text-foreground hover:bg-muted"
-                activeClassName="bg-foreground text-background border-foreground shadow-pop hover:bg-foreground hover:text-background"
+                className="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md transition-colors hover:text-foreground hover:bg-muted"
+                activeClassName="bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
               >
                 {item.title}
               </NavLink>

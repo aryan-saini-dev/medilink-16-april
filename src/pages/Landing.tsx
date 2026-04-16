@@ -281,12 +281,7 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      <motion.nav
-        className="fixed top-0 w-full z-50 bg-[#1E5AA8] shadow-md border-b border-[#164a8a]"
-        initial={{ y: -100 }}
-        animate={{ y: navVisible ? 0 : -100 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
+      <nav className="fixed top-0 w-full z-50 bg-[#1E5AA8] shadow-md border-b border-[#164a8a]">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-[64px] px-6 lg:px-8">
           <Link to="/" className="translate-y-[3px]">
             <Logo variant="white" size="md" />
@@ -300,7 +295,7 @@ const Landing = () => {
             </Button>
           </div>
         </div>
-      </motion.nav>
+      </nav>
 
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F4F8FD] via-background to-background">
         {/* Subtle medical grid background */}
@@ -645,7 +640,7 @@ const Landing = () => {
                   <CardContent className="p-6">
                     <div className="flex gap-0.5 mb-4">
                       {[...Array(5)].map((_, j) => (
-                        <Star key={j} className="w-4 h-4 fill-primary text-primary" />
+                        <Star key={j} className="w-4 h-4 fill-[#1E5AA8] text-[#1E5AA8]" />
                       ))}
                     </div>
                     <p className="text-foreground text-sm leading-relaxed mb-5">"{testimonial.quote}"</p>

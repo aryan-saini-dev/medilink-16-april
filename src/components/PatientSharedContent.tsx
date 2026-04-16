@@ -251,7 +251,7 @@ export function PatientSharedContent() {
                     <div className="flex items-center ml-2">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="hidden sm:flex" onClick={() => setSelectedReport(i)}>View Report</Button>
+                          <Button variant="outline" size="sm" className="hidden sm:flex border-2 border-foreground shadow-pop-soft hover:-translate-y-[1px] transition-bounce" onClick={() => setSelectedReport(i)}>View Report</Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-md">
                           <DialogHeader>

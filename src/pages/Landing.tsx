@@ -302,86 +302,229 @@ const Landing = () => {
         </div>
       </motion.nav>
 
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 pattern-dots opacity-[0.08]" />
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-10 pb-20 lg:pt-16 lg:pb-28">
-          <div className="relative min-h-[580px] flex items-center justify-center">
-            <ConfettiLayer size={confettiSize} opacity={confettiOpacity} count={confettiCount} spread={confettiSpread} />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F4F8FD] via-background to-background">
+        {/* Subtle medical grid background */}
+        <div
+          className="absolute inset-0 opacity-[0.06] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(#1E5AA8 1px, transparent 1px), linear-gradient(90deg, #1E5AA8 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
+        {/* Soft blue radial glow */}
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-[#1E5AA8]/10 blur-3xl pointer-events-none" />
 
-            {[
-              { img: medClinic, alt: "Clinical review", label: "Clinical", pos: "left-[-100px] lg:left-[-40px] top-[20px] w-[200px] lg:w-[260px]", rot: "rotate-[6deg]", delay: 0.2, init: { x: -80, y: -60 } },
-              { img: medQr, alt: "QR access", label: "Access", pos: "left-[-120px] lg:left-[-60px] bottom-[20px] w-[200px] lg:w-[260px]", rot: "rotate-[-5deg]", delay: 0.35, init: { x: -80, y: 60 } },
-              { img: aiRagAgent, alt: "RAG agent insights", label: "RAG + ML", pos: "right-[-100px] lg:right-[-40px] top-[20px] w-[200px] lg:w-[260px]", rot: "rotate-[-6deg]", delay: 0.25, init: { x: 80, y: -60 } },
-              { img: medDiagnostics, alt: "Diagnostics HUD", label: "Diagnostics", pos: "right-[-120px] lg:right-[-60px] bottom-[20px] w-[200px] lg:w-[260px]", rot: "rotate-[5deg]", delay: 0.4, init: { x: 80, y: 60 } },
-            ].map((card) => (
-              <motion.div
-                key={card.label}
-                className={`hidden md:block absolute ${card.pos}`}
-                initial={{ opacity: 0, scale: 0.3, ...card.init }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20, delay: card.delay }}
-              >
-                <div
-                  className={`rounded-2xl overflow-hidden border-2 border-foreground ${
-                    card.label === "Clinical"
-                      ? "shadow-sticker-elevated-black-mint"
-                      : card.label === "Access"
-                        ? "shadow-sticker-elevated-black-amber"
-                        : card.label === "RAG + ML"
-                          ? "shadow-sticker-elevated-black-pink"
-                          : "shadow-sticker-elevated-black"
-                  } ${card.rot}`}
-                >
-                  <img src={card.img} alt={card.alt} className="w-full h-[150px] object-cover" />
-                  <div className="bg-card px-3 py-2">
-                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">{card.label}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-
-            <motion.div className="text-center max-w-2xl mx-auto relative z-10" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <div className="flex items-center justify-center mb-5">
-                <Logo variant="with-text" size="3xl" />
-              </div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-[#1E5AA8]/10 border border-[#1E5AA8]/20">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-20 lg:pt-32 lg:pb-28">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            {/* LEFT: Copy */}
+            <motion.div
+              className="lg:col-span-7 text-left"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full bg-white border border-[#1E5AA8]/25 shadow-sm">
                 <Shield className="w-3.5 h-3.5 text-[#1E5AA8]" />
-                <span className="text-xs font-semibold text-[#1E5AA8] tracking-wide">HIPAA-COMPLIANT · SOC 2 TYPE II · END-TO-END ENCRYPTED</span>
+                <span className="text-[11px] font-semibold text-[#1E5AA8] tracking-[0.12em] uppercase">
+                  HIPAA · SOC 2 Type II · End-to-end encrypted
+                </span>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-[44px] 2xl:text-[56px] font-display tracking-tight leading-[1.15] text-foreground mb-6" style={{ fontWeight: titleWeight }}>
-                The clinical platform built for
-                <br />
-                trusted medical{" "}
-                <span className="inline-block relative translate-y-[8px]" style={{ minWidth: "7ch" }}>
+
+              <h1
+                className="text-4xl sm:text-5xl lg:text-[58px] font-display tracking-[-0.02em] leading-[1.05] text-foreground mb-6"
+                style={{ fontWeight: titleWeight }}
+              >
+                The clinical platform built for trusted medical{" "}
+                <span className="inline-block relative align-baseline" style={{ minWidth: "7ch" }}>
                   <AnimatePresence mode="wait">
                     <motion.span
                       key={rotatingWords[wordIndex]}
-                      initial={{ opacity: 0, y: 16 }}
+                      initial={{ opacity: 0, y: 14 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -16 }}
+                      exit={{ opacity: 0, y: -14 }}
                       transition={{ duration: 0.35 }}
-                      className="text-foreground inline-block"
+                      className="inline-block text-[#1E5AA8]"
                     >
                       {rotatingWords[wordIndex]}
                     </motion.span>
                   </AnimatePresence>
-                  <span className="invisible block h-0 overflow-hidden" aria-hidden="true">sovereignty.</span>
+                  <span className="invisible block h-0 overflow-hidden" aria-hidden="true">
+                    diagnostics.
+                  </span>
                 </span>
               </h1>
-              <p className="text-lg text-muted-foreground max-w-lg mx-auto mb-8 leading-relaxed">
-                Patient-controlled access with AI-assisted diagnostics. Retrieval-grounded summaries (RAG) and clinician-verified records — secure by default.
+
+              <p className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
+                Patient-controlled access with AI-assisted clinical decision support. Retrieval-grounded
+                summaries and clinician-verified records — secure by default.
               </p>
-              <div className="flex items-center justify-center gap-3">
-                <Button size="lg" className="text-base font-semibold px-8 h-12 bg-[#1E5AA8] hover:bg-[#164a8a] text-white border-2 border-foreground shadow-sticker-elevated active:shadow-pop-active active:translate-x-[2px] active:translate-y-[2px]" asChild>
-                  <Link to="/patient-login">Enter Patient Portal <ArrowRight className="ml-2 w-4 h-4" /></Link>
+
+              <div className="flex flex-wrap items-center gap-3 mb-10">
+                <Button
+                  size="lg"
+                  className="text-base font-semibold px-7 h-12 bg-[#1E5AA8] hover:bg-[#164a8a] text-white shadow-sm"
+                  asChild
+                >
+                  <Link to="/patient-login">
+                    Enter Patient Portal <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-base font-semibold px-8 h-12 text-[#1E293B] border-2 border-foreground shadow-sticker-elevated active:shadow-pop-active active:translate-x-[2px] active:translate-y-[2px]" asChild>
-                  <Link to="/clinical-portal">Clinical Access</Link>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-base font-semibold px-7 h-12 border-[#1E5AA8]/30 text-[#1E5AA8] hover:bg-[#1E5AA8]/5"
+                  asChild
+                >
+                  <Link to="/clinical-portal">Clinical Portal</Link>
                 </Button>
               </div>
-              <div className="flex items-center justify-center gap-6 mt-8 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Trusted by 240+ clinics</span>
-                <span className="hidden sm:inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8]" /> 1.2M patient records secured</span>
+
+              {/* Trust strip */}
+              <div className="grid grid-cols-3 gap-6 max-w-lg border-t border-border/70 pt-6">
+                <div>
+                  <div className="text-2xl font-display font-bold text-foreground">240+</div>
+                  <div className="text-xs text-muted-foreground mt-1 leading-tight">Clinics & hospital networks</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-display font-bold text-foreground">1.2M</div>
+                  <div className="text-xs text-muted-foreground mt-1 leading-tight">Patient records secured</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-display font-bold text-foreground">99.99%</div>
+                  <div className="text-xs text-muted-foreground mt-1 leading-tight">Platform uptime SLA</div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* RIGHT: Clinical UI mockup */}
+            <motion.div
+              className="lg:col-span-5 relative"
+              initial={{ opacity: 0, y: 30, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Floating mini cards */}
+              <motion.div
+                className="absolute -top-6 -left-6 z-20 bg-white border border-border rounded-xl shadow-lg px-4 py-3 flex items-center gap-3"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <div className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">Consent</div>
+                  <div className="text-sm font-bold text-foreground">Verified · 2s ago</div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="absolute -bottom-5 -right-4 z-20 bg-white border border-border rounded-xl shadow-lg px-4 py-3 flex items-center gap-3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.75 }}
+              >
+                <div className="w-9 h-9 rounded-full bg-[#1E5AA8]/10 flex items-center justify-center">
+                  <Bot className="w-4 h-4 text-[#1E5AA8]" />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">AI Summary</div>
+                  <div className="text-sm font-bold text-foreground">Ready for review</div>
+                </div>
+              </motion.div>
+
+              {/* Main mock card */}
+              <div className="relative bg-white border border-border rounded-2xl shadow-xl overflow-hidden">
+                {/* Window header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-[#F8FAFC]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400/70" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/70" />
+                  </div>
+                  <div className="text-[11px] text-muted-foreground font-mono">medilink.app/patient/0421</div>
+                  <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                    LIVE
+                  </span>
+                </div>
+
+                {/* Patient header */}
+                <div className="px-5 pt-5 pb-4 border-b border-border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
+                        Patient · MRN 04210912
+                      </div>
+                      <div className="font-display font-bold text-lg text-foreground mt-0.5">Eleanor R. Hayes</div>
+                      <div className="text-xs text-muted-foreground">42 · Female · Cardiology follow-up</div>
+                    </div>
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1E5AA8] to-[#2C7BD9] flex items-center justify-center text-white font-bold">
+                      EH
+                    </div>
+                  </div>
+                </div>
+
+                {/* Vitals */}
+                <div className="grid grid-cols-3 divide-x divide-border border-b border-border">
+                  {[
+                    { label: "Heart Rate", value: "72", unit: "bpm", tone: "text-foreground" },
+                    { label: "BP", value: "118/76", unit: "mmHg", tone: "text-foreground" },
+                    { label: "SpO₂", value: "98", unit: "%", tone: "text-emerald-600" },
+                  ].map((v) => (
+                    <div key={v.label} className="px-4 py-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
+                        {v.label}
+                      </div>
+                      <div className="flex items-baseline gap-1 mt-0.5">
+                        <span className={`text-lg font-display font-bold ${v.tone}`}>{v.value}</span>
+                        <span className="text-[10px] text-muted-foreground">{v.unit}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* EKG line */}
+                <div className="px-5 py-4 bg-[#FBFCFE]">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
+                      ECG · Lead II
+                    </span>
+                    <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Sinus rhythm
+                    </span>
+                  </div>
+                  <svg viewBox="0 0 400 60" className="w-full h-14" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="ekgFade" x1="0" x2="1">
+                        <stop offset="0" stopColor="#1E5AA8" stopOpacity="0" />
+                        <stop offset="0.15" stopColor="#1E5AA8" stopOpacity="1" />
+                        <stop offset="1" stopColor="#1E5AA8" stopOpacity="1" />
+                      </linearGradient>
+                    </defs>
+                    <motion.path
+                      d="M0 30 L40 30 L50 30 L55 25 L60 35 L65 10 L70 50 L75 25 L80 30 L120 30 L130 30 L135 25 L140 35 L145 10 L150 50 L155 25 L160 30 L200 30 L210 30 L215 25 L220 35 L225 10 L230 50 L235 25 L240 30 L280 30 L290 30 L295 25 L300 35 L305 10 L310 50 L315 25 L320 30 L400 30"
+                      fill="none"
+                      stroke="url(#ekgFade)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
+                    />
+                  </svg>
+                </div>
+
+                {/* AI summary line */}
+                <div className="px-5 py-3 bg-[#1E5AA8]/[0.04] border-t border-border flex items-start gap-2.5">
+                  <ScanLine className="w-4 h-4 text-[#1E5AA8] mt-0.5 shrink-0" />
+                  <p className="text-xs text-foreground leading-relaxed">
+                    <span className="font-semibold">Clinical insight:</span> Vitals stable. No abnormalities flagged in the
+                    last 24h. Recommend routine follow-up in 4 weeks.
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>

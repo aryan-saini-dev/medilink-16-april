@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,38 +6,60 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
+    --background: 48 100% 98%;
     --foreground: 215 28% 17%;
     --card: 0 0% 100%;
     --card-foreground: 215 28% 17%;
     --popover: 0 0% 100%;
     --popover-foreground: 215 28% 17%;
-    --primary: 210 70% 38%;
+    --primary: 322 81% 70%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 172 50% 40%;
+    --secondary: 158 64% 52%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 210 20% 96%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 335 65% 52%;
+    --accent: 322 81% 70%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 20% 90%;
-    --input: 214 20% 90%;
-    --ring: 210 70% 38%;
-    --radius: 0.5rem;
-    --success: 158 50% 42%;
+    --border: 214 32% 91%;
+    --input: 0 0% 100%;
+    --ring: 322 81% 70%;
+    --radius: 1rem;
+    --radius-sm: 0.5rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.5rem;
+    --radius-full: 9999px;
+    --tertiary: 43 96% 56%;
+    --tertiary-foreground: 215 28% 17%;
+    --quaternary: 158 64% 52%;
+    --quaternary-foreground: 0 0% 100%;
+    --success: 158 64% 42%;
     --success-foreground: 0 0% 100%;
-    --warning: 43 80% 50%;
+    --warning: 43 96% 50%;
     --warning-foreground: 215 28% 17%;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 28% 17%;
-    --sidebar-primary: 210 70% 38%;
+    --sidebar-primary: 322 81% 70%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 20% 96%;
+    --sidebar-accent: 210 40% 96%;
     --sidebar-accent-foreground: 215 28% 17%;
-    --sidebar-border: 214 20% 90%;
-    --sidebar-ring: 210 70% 38%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 322 81% 70%;
+    --shadow-pop: 4px 4px 0 0 hsl(var(--foreground));
+    --shadow-pop-hover: 6px 6px 0 0 hsl(var(--foreground));
+    --shadow-pop-active: 2px 2px 0 0 hsl(var(--foreground));
+    --shadow-card: 8px 8px 0 0 hsl(var(--border));
+    --shadow-card-featured: 8px 8px 0 0 hsl(var(--primary) / 0.35);
+    --shadow-elevated: 0 18px 40px hsl(var(--foreground) / 0.18);
+    --shadow-elevated-pink: 0 18px 40px hsl(var(--primary) / 0.25);
+    --shadow-elevated-mint: 0 18px 40px hsl(var(--secondary) / 0.22);
+    --shadow-elevated-amber: 0 18px 40px hsl(var(--tertiary) / 0.22);
+    --bounce-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --pattern-dot: radial-gradient(circle, hsl(var(--foreground) / 0.14) 1.4px, transparent 1.5px);
+    --pattern-grid:
+      linear-gradient(hsl(var(--foreground) / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.08) 1px, transparent 1px);
   }
 }
 
@@ -51,28 +73,50 @@
   }
 
   ::selection {
-    background-color: hsl(var(--primary) / 0.15);
+    background-color: hsl(var(--primary) / 0.25);
     color: hsl(var(--foreground));
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    background-image:
+      radial-gradient(circle at top left, hsl(var(--secondary) / 0.14), transparent 22%),
+      radial-gradient(circle at bottom right, hsl(var(--primary) / 0.16), transparent 24%);
     text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: "Inter", system-ui, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Outfit", system-ui, sans-serif;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    transition:
+      transform 300ms var(--bounce-ease),
+      box-shadow 300ms var(--bounce-ease),
+      border-color 200ms ease,
+      background-color 200ms ease,
+      color 200ms ease;
   }
 
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
     }
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -81,16 +125,94 @@
   }
 }
 
+@layer components {
+  .playful-surface {
+    @apply relative overflow-hidden rounded-[var(--radius-lg)] border-2 border-foreground bg-card;
+    box-shadow: var(--shadow-card);
+  }
+
+  .playful-card {
+    @apply relative overflow-hidden rounded-[var(--radius-lg)] border-2 border-foreground bg-card;
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 300ms var(--bounce-ease),
+      box-shadow 300ms var(--bounce-ease);
+  }
+
+  .playful-card:hover {
+    transform: rotate(-1deg) scale(1.02);
+  }
+}
+
 @layer utilities {
   .font-body {
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
   }
 
   .font-display {
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Outfit", system-ui, sans-serif;
   }
 
   .prose-readable {
     max-width: 70ch;
+  }
+
+  .shadow-pop {
+    box-shadow: var(--shadow-pop);
+  }
+
+  .shadow-pop-soft {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-pop-featured {
+    box-shadow: var(--shadow-card-featured);
+  }
+
+  .shadow-sticker-elevated {
+    box-shadow: var(--shadow-card), var(--shadow-elevated);
+  }
+
+  .shadow-sticker-elevated-pink {
+    box-shadow: var(--shadow-card), var(--shadow-elevated-pink);
+  }
+
+  .shadow-sticker-elevated-mint {
+    box-shadow: var(--shadow-card), var(--shadow-elevated-mint);
+  }
+
+  .shadow-sticker-elevated-amber {
+    box-shadow: var(--shadow-card), var(--shadow-elevated-amber);
+  }
+
+  /* Landing page specific - black hard shadow instead of border color */
+  .shadow-sticker-elevated-black {
+    box-shadow: 8px 8px 0 0 hsl(var(--foreground)), var(--shadow-elevated);
+  }
+
+  .shadow-sticker-elevated-black-pink {
+    box-shadow: 8px 8px 0 0 hsl(var(--foreground)), var(--shadow-elevated-pink);
+  }
+
+  .shadow-sticker-elevated-black-mint {
+    box-shadow: 8px 8px 0 0 hsl(var(--foreground)), var(--shadow-elevated-mint);
+  }
+
+  .shadow-sticker-elevated-black-amber {
+    box-shadow: 8px 8px 0 0 hsl(var(--foreground)), var(--shadow-elevated-amber);
+  }
+
+  .transition-bounce {
+    transition-timing-function: var(--bounce-ease);
+  }
+
+  .pattern-dots {
+    background-image: var(--pattern-dot);
+    background-size: 22px 22px;
+  }
+
+  .pattern-grid {
+    background-image: var(--pattern-grid);
+    background-size: 26px 26px;
   }
 }

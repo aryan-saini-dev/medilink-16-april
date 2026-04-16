@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   AlertTriangle,
   Activity,
@@ -21,17 +20,10 @@ import {
   Footprints,
   CheckCircle2,
   MinusCircle,
+  Info,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 export const MOCK_TIMELINE = [
   {
@@ -93,23 +85,20 @@ type BodyPartItem = {
 };
 
 const BODY_PARTS: BodyPartItem[] = [
-  { id: "brain", name: "Brain / Neuro", icon: Brain, status: "ok", detail: "Neuro screen normal. No red flags detected." },
-  { id: "heart", name: "Cardiovascular", icon: HeartPulse, status: "alert", detail: "Elevated BP trend (142/91). Monitor + adjust meds." },
-  { id: "lungs", name: "Pulmonary", icon: AirVent, status: "ok", detail: "No respiratory concerns reported. SpO2 stable (98%)." },
-  { id: "eyes", name: "Ophthalmology", icon: Eye, status: "treated", detail: "Mild strain noted previously. Managed with rest + hydration." },
-  { id: "ears", name: "ENT", icon: Ear, status: "na", detail: "No recent data available." },
-  { id: "teeth", name: "Dental", icon: Smile, status: "na", detail: "Dental records not connected yet." },
-  { id: "bones", name: "Musculoskeletal", icon: Bone, status: "ok", detail: "No musculoskeletal alerts flagged." },
-  { id: "hands", name: "Upper Extremities", icon: Hand, status: "ok", detail: "No issues reported." },
-  { id: "feet", name: "Lower Extremities", icon: Footprints, status: "ok", detail: "Mobility normal. No neuropathy indicators." },
+  { id: "brain", name: "Brain", icon: Brain, status: "ok", detail: "Neuro screen normal. No red flags detected." },
+  { id: "heart", name: "Heart", icon: HeartPulse, status: "alert", detail: "Elevated BP trend (142/91). Monitor + adjust meds." },
+  { id: "lungs", name: "Lungs", icon: AirVent, status: "ok", detail: "No respiratory concerns reported. SpO2 stable (98%)." },
+  { id: "eyes", name: "Eyes", icon: Eye, status: "treated", detail: "Mild strain noted previously. Managed with rest + hydration." },
+  { id: "ears", name: "Ears", icon: Ear, status: "na", detail: "No recent data available." },
+  { id: "teeth", name: "Teeth", icon: Smile, status: "na", detail: "Dental records not connected yet." },
+  { id: "bones", name: "Bones", icon: Bone, status: "ok", detail: "No musculoskeletal alerts flagged." },
+  { id: "hands", name: "Hands", icon: Hand, status: "ok", detail: "No issues reported." },
+  { id: "feet", name: "Feet", icon: Footprints, status: "ok", detail: "Mobility normal. No neuropathy indicators." },
 ];
-
-const statusLabel: Record<BodyPartStatus, string> = { ok: "Normal", alert: "Alert", treated: "Monitoring", na: "N/A" };
-const statusColor: Record<BodyPartStatus, string> = { ok: "text-success", alert: "text-destructive", treated: "text-warning", na: "text-muted-foreground" };
 
 function BodyPartStatusIcon({ status }: { status: BodyPartStatus }) {
   if (status === "ok") return <CheckCircle2 className="w-4 h-4 text-success" aria-label="Normal" />;
-  if (status === "treated") return <CheckCircle2 className="w-4 h-4 text-warning" aria-label="Monitoring" />;
+  if (status === "treated") return <CheckCircle2 className="w-4 h-4 text-warning" aria-label="Treated / watch" />;
   if (status === "na") return <MinusCircle className="w-4 h-4 text-muted-foreground" aria-label="Not available" />;
   return <AlertTriangle className="w-4 h-4 text-destructive" aria-label="Alert" />;
 }
@@ -120,215 +109,217 @@ export function PatientSharedContent() {
   return (
     <TooltipProvider>
       <Tabs defaultValue="diagnostics" className="w-full">
-        <div className="px-6 border-b border-border mb-6">
-          <TabsList className="bg-transparent border-none p-0 h-auto gap-6 justify-start w-full overflow-x-auto pb-3 shadow-none">
-            <TabsTrigger value="diagnostics" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-13px] shadow-none text-sm">
-              Clinical Decision Support
+        <div className="px-6 border-b-2 border-border mb-6">
+          <TabsList className="bg-transparent border-none p-0 h-auto gap-6 justify-start w-full overflow-x-auto pb-4 shadow-none">
+            <TabsTrigger value="diagnostics" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
+              AI Diagnostics
             </TabsTrigger>
-            <TabsTrigger value="anatomy" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-13px] shadow-none text-sm">
-              Patient Longitudinal Record
+            <TabsTrigger value="anatomy" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
+              Body parts
             </TabsTrigger>
-            <TabsTrigger value="history" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-13px] shadow-none text-sm">
+            <TabsTrigger value="history" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
               History & Records
             </TabsTrigger>
-            <TabsTrigger value="ml" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-13px] shadow-none text-sm">
+            <TabsTrigger value="ml" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
               ML Models
             </TabsTrigger>
           </TabsList>
         </div>
 
         <div className="px-6 pb-20">
-          {/* Diagnostics tab */}
           <TabsContent value="diagnostics" className="mt-0 outline-none">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               <div className="flex items-center gap-2 mb-4">
-                <AlertTriangle className="w-5 h-5 text-warning" />
-                <h2 className="font-semibold text-foreground text-lg">AI Overview & Risk Flags</h2>
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                <h2 className="font-display font-bold text-foreground text-lg">AI Overview & Risk Flags</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <Card className="p-5 border-warning/30 bg-warning/5">
-                  <h3 className="text-warning font-semibold mb-2 text-sm">Elevated Blood Pressure</h3>
-                  <p className="text-sm text-foreground/80 leading-relaxed mb-3">
-                    Consistent trend of elevated blood pressure over 3 readings. Average 140/89. Recommended: Medication adjustment.
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div className="bg-amber-500/10 border-2 border-amber-500/20 rounded-xl p-5 shadow-pop-soft">
+                  <h3 className="text-amber-700 font-bold mb-2">Elevated Blood Pressure</h3>
+                  <p className="text-sm font-medium text-foreground/90 leading-relaxed mb-3">
+                    Patient exhibits consistent trend of elevated blood pressure over the last 3 readings. Average 140/89. Recommended action: Medication adjustment.
                   </p>
-                  <div className="h-1.5 w-full bg-warning/20 rounded-full overflow-hidden">
-                    <div className="h-full bg-warning w-[75%] rounded-full" />
+                  <div className="h-1.5 w-full bg-amber-500/20 rounded-full overflow-hidden">
+                    <div className="h-full bg-amber-500 w-[75%]" />
                   </div>
-                </Card>
+                </div>
 
-                <Card className="p-5 border-destructive/30 bg-destructive/5">
-                  <h3 className="text-destructive font-semibold mb-2 text-sm">Allergy Interaction Risk</h3>
-                  <p className="text-sm text-foreground/80 leading-relaxed">
-                    Penicillin allergy active. Prescriptions validated against cross-reactivity databases. Zero conflicts detected.
+                <div className="bg-destructive/10 border-2 border-destructive/20 rounded-xl p-5 shadow-pop-soft">
+                  <h3 className="text-destructive font-bold mb-2">Allergy Interaction Risk</h3>
+                  <p className="text-sm font-medium text-foreground/90 leading-relaxed">
+                    Penicillin allergy active. Current prescriptions have been validated against standard cross-reactivity databases. Zero conflicts detected.
                   </p>
-                </Card>
+                </div>
               </div>
 
-              <Card className="p-5">
-                <h3 className="font-semibold text-foreground mb-3 text-sm">Summary</h3>
-                <ul className="space-y-2.5">
+              <div className="bg-card border-2 border-foreground rounded-xl p-5 shadow-sticker">
+                <h3 className="font-display font-bold text-foreground mb-4">Summary</h3>
+                <ul className="space-y-3">
                   {MOCK_PATIENT.summary.map((point, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/80">
+                    <li key={i} className="flex items-start gap-3 text-sm text-foreground/90 font-medium">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                       <span>{point}</span>
                     </li>
                   ))}
                 </ul>
-              </Card>
+              </div>
             </motion.div>
           </TabsContent>
 
-          {/* Anatomy / Longitudinal Record tab */}
           <TabsContent value="anatomy" className="mt-0 outline-none">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-              <Card className="overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[200px]">System</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Details</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {BODY_PARTS.map((part) => {
-                      const Icon = part.icon;
-                      return (
-                        <TableRow key={part.id}>
-                          <TableCell className="font-medium">
-                            <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
-                                <Icon className="w-3.5 h-3.5 text-primary" />
-                              </div>
-                              {part.name}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${statusColor[part.status]}`}>
-                              <BodyPartStatusIcon status={part.status} />
-                              {statusLabel[part.status]}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">{part.detail}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+              <div className="bg-card w-full rounded-2xl border-2 border-foreground overflow-hidden relative shadow-sticker">
+                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
 
-                <div className="p-4 border-t border-border flex flex-wrap gap-4 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-success" /> Normal</span>
-                  <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-warning" /> Monitoring</span>
-                  <span className="inline-flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5 text-destructive" /> Alert</span>
-                  <span className="inline-flex items-center gap-1.5"><MinusCircle className="w-3.5 h-3.5" /> N/A</span>
+                <div className="relative p-5 sm:p-6">
+                  
+
+  
+                    
+                    <div className="p-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                        {BODY_PARTS.map((part) => {
+                          const Icon = part.icon;
+                          return (
+                            <Tooltip key={part.id}>
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border-2 border-foreground bg-background hover:bg-muted/40 shadow-pop-soft transition-bounce hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                                >
+                                  <span className="w-8 h-8 rounded-full border-2 border-foreground bg-primary/10 flex items-center justify-center shadow-pop shrink-0">
+                                    <Icon className="w-4.5 h-4.5 text-primary" />
+                                  </span>
+                                  <span className="flex-1 text-left text-sm font-semibold text-foreground truncate">
+                                    {part.name}
+                                  </span>
+                                  <span className="shrink-0">
+                                    <BodyPartStatusIcon status={part.status} />
+                                  </span>
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="max-w-[260px] text-xs leading-relaxed border-2 border-foreground shadow-pop-soft">
+                                <div className="font-semibold text-foreground mb-1">{part.name}</div>
+                                <div className="text-muted-foreground">{part.detail}</div>
+                              </TooltipContent>
+                            </Tooltip>
+                          );
+                        })}
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Normal
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-warning" /> Treated / watch
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-destructive" /> Alert
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <MinusCircle className="w-3.5 h-3.5" /> N/A
+                        </span>
+                      </div>
+                    </div>
+                  
                 </div>
-              </Card>
+              </div>
             </motion.div>
           </TabsContent>
 
-          {/* History tab — now a proper table */}
-          <TabsContent value="history" className="mt-0 outline-none">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-              <Card className="overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[120px]">Date</TableHead>
-                      <TableHead className="w-[60px]">Type</TableHead>
-                      <TableHead>Event</TableHead>
-                      <TableHead>Summary</TableHead>
-                      <TableHead className="w-[100px]">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {MOCK_TIMELINE.map((event, i) => {
-                      const Icon = event.icon;
-                      return (
-                        <TableRow key={i}>
-                          <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{event.date}</TableCell>
-                          <TableCell>
-                            <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
-                              <Icon className="w-3.5 h-3.5 text-primary" />
-                            </div>
-                          </TableCell>
-                          <TableCell className="font-medium text-sm">{event.title}</TableCell>
-                          <TableCell className="text-sm text-muted-foreground">{event.brief}</TableCell>
-                          <TableCell>
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button variant="outline" size="sm" className="text-xs" onClick={() => setSelectedReport(i)}>View</Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-md">
-                                <DialogHeader>
-                                  <DialogTitle>{event.title} — {event.date}</DialogTitle>
-                                </DialogHeader>
-                                <div className="mt-4">
-                                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap leading-relaxed bg-muted/50 rounded-md p-4 overflow-auto max-h-[60vh]">
-                                    {event.detail}
-                                  </pre>
-                                  <Button className="w-full mt-4" variant="default" size="sm">
-                                    <Download className="w-4 h-4 mr-2" /> Download PDF
-                                  </Button>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </Card>
-            </motion.div>
-          </TabsContent>
-
-          {/* ML tab */}
-          <TabsContent value="ml" className="mt-0 outline-none">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="p-6 flex flex-col items-center justify-center text-center">
-                  <div className="relative w-28 h-28 rounded-full border-[10px] border-primary/15 flex items-center justify-center mb-4">
-                    <div className="absolute inset-0 rounded-full border-[10px] border-primary border-t-transparent border-r-transparent -rotate-45" />
-                    <span className="text-2xl font-bold text-foreground">87%</span>
+        <TabsContent value="history" className="mt-0 outline-none">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+            <div className="space-y-4">
+              {MOCK_TIMELINE.map((event, i) => {
+                const Icon = event.icon;
+                return (
+                  <div key={i} className="flex gap-4 p-4 rounded-xl border-2 border-foreground bg-card transition-colors shadow-pop-soft">
+                    <div className="relative z-10 w-10 h-10 rounded-full bg-primary/10 border-2 border-foreground flex items-center justify-center shrink-0 shadow-pop">
+                      <Icon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="text-sm font-semibold text-foreground">{event.title}</h3>
+                        <p className="text-xs text-muted-foreground">{event.date}</p>
+                      </div>
+                      <p className="text-xs text-muted-foreground flex items-center gap-2">
+                        {event.brief}
+                      </p>
+                    </div>
+                    <div className="flex items-center ml-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm" className="hidden sm:flex" onClick={() => setSelectedReport(i)}>View Report</Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-md">
+                          <DialogHeader>
+                            <DialogTitle>{event.title} - {event.date}</DialogTitle>
+                          </DialogHeader>
+                          <div className="mt-4">
+                            <pre className="text-xs font-mono text-foreground whitespace-pre-wrap leading-relaxed bg-muted/50 rounded-xl p-4 overflow-auto max-h-[60vh]">
+                              {event.detail}
+                            </pre>
+                            <Button className="w-full mt-4" variant="default">
+                              <Download className="w-4 h-4 mr-2" /> Download PDF PDF
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-foreground mb-1 text-sm">Hypertension Progression</h3>
-                  <p className="text-xs text-muted-foreground">Probability of Stage 2 hypertension within 12 months if untreated.</p>
-                </Card>
+                );
+              })}
+            </div>
+          </motion.div>
+        </TabsContent>
 
-                <Card className="p-6 flex flex-col items-center justify-center text-center">
-                  <div className="relative w-28 h-28 flex items-end justify-center mb-4 gap-1.5 pb-3">
-                    <div className="w-5 bg-muted rounded-t-sm h-[40%]" />
-                    <div className="w-5 bg-muted rounded-t-sm h-[50%]" />
-                    <div className="w-5 bg-primary/40 rounded-t-sm h-[70%]" />
-                    <div className="w-5 bg-primary rounded-t-sm h-[90%]" />
-                    <div className="absolute bottom-3 left-0 right-0 h-px bg-border" />
-                  </div>
-                  <h3 className="font-semibold text-foreground mb-1 text-sm">Medication Efficacy</h3>
-                  <p className="text-xs text-muted-foreground">Lisinopril response curve vs typical demographic baseline.</p>
-                </Card>
+        <TabsContent value="ml" className="mt-0 outline-none">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-card border-2 border-foreground rounded-xl p-6 shadow-sticker flex flex-col items-center justify-center text-center">
+                <div className="relative w-32 h-32 rounded-full border-[12px] border-primary/20 flex items-center justify-center mb-4">
+                  <div className="absolute inset-0 rounded-full border-[12px] border-primary border-t-transparent border-r-transparent -rotate-45"></div>
+                  <span className="text-3xl font-display font-bold text-foreground">87%</span>
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Hypertension Progression</h3>
+                <p className="text-xs text-muted-foreground">Probability of Stage 2 hypertension within 12 months if untreated.</p>
               </div>
 
-              <Card className="p-5">
-                <h3 className="text-sm font-semibold mb-3">Model Parameters</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Confidence Score</span>
-                    <span className="font-mono text-success font-medium">HIGH (0.92)</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Dataset Baseline</span>
-                    <span className="font-mono">North America / Adult / Male</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Last Run</span>
-                    <span className="font-mono">15 mins ago</span>
-                  </div>
+              <div className="bg-card border-2 border-foreground rounded-xl p-6 shadow-sticker flex flex-col items-center justify-center text-center">
+                <div className="relative w-32 h-32 flex items-end justify-center mb-4 gap-2 pb-4">
+                  <div className="w-6 bg-muted rounded-t-sm h-[40%]" />
+                  <div className="w-6 bg-muted rounded-t-sm h-[50%]" />
+                  <div className="w-6 bg-primary/40 rounded-t-sm h-[70%]" />
+                  <div className="w-6 bg-primary rounded-t-sm h-[90%]" />
+                  <div className="absolute bottom-4 left-0 right-0 h-px bg-border" />
                 </div>
-              </Card>
-            </motion.div>
-          </TabsContent>
-        </div>
+                <h3 className="font-semibold text-foreground mb-1">Medication Efficacy</h3>
+                <p className="text-xs text-muted-foreground">Lisinopril response curve vs typical demographic baseline.</p>
+              </div>
+            </div>
+
+            <div className="bg-foreground/[0.02] border-2 border-border rounded-xl p-5">
+              <h3 className="text-sm font-semibold mb-3">Model Parameters</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Confidence Score</span>
+                  <span className="font-mono text-success">HIGH (0.92)</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Dataset Baseline</span>
+                  <span className="font-mono">North America / Adult / Male</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Last Run</span>
+                  <span className="font-mono">15 mins ago</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </TabsContent>
+      </div>
       </Tabs>
     </TooltipProvider>
   );

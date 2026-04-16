@@ -79,22 +79,32 @@ type BodyPartStatus = "ok" | "alert" | "treated" | "na";
 type BodyPartItem = {
   id: string;
   name: string;
+  system: string;
   icon: React.ComponentType<{ className?: string }>;
   status: BodyPartStatus;
+  metric: string;
+  lastChecked: string;
   detail: string;
 };
 
 const BODY_PARTS: BodyPartItem[] = [
-  { id: "brain", name: "Brain", icon: Brain, status: "ok", detail: "Neuro screen normal. No red flags detected." },
-  { id: "heart", name: "Heart", icon: HeartPulse, status: "alert", detail: "Elevated BP trend (142/91). Monitor + adjust meds." },
-  { id: "lungs", name: "Lungs", icon: AirVent, status: "ok", detail: "No respiratory concerns reported. SpO2 stable (98%)." },
-  { id: "eyes", name: "Eyes", icon: Eye, status: "treated", detail: "Mild strain noted previously. Managed with rest + hydration." },
-  { id: "ears", name: "Ears", icon: Ear, status: "na", detail: "No recent data available." },
-  { id: "teeth", name: "Teeth", icon: Smile, status: "na", detail: "Dental records not connected yet." },
-  { id: "bones", name: "Bones", icon: Bone, status: "ok", detail: "No musculoskeletal alerts flagged." },
-  { id: "hands", name: "Hands", icon: Hand, status: "ok", detail: "No issues reported." },
-  { id: "feet", name: "Feet", icon: Footprints, status: "ok", detail: "Mobility normal. No neuropathy indicators." },
+  { id: "brain", name: "Brain", system: "Neurological", icon: Brain, status: "ok", metric: "Cognitive screen: WNL", lastChecked: "Apr 12, 2026", detail: "Neuro screen normal. No red flags detected." },
+  { id: "heart", name: "Heart", system: "Cardiovascular", icon: HeartPulse, status: "alert", metric: "BP 142/91 mmHg · HR 78", lastChecked: "Apr 12, 2026", detail: "Elevated BP trend (142/91). Monitor + adjust meds." },
+  { id: "lungs", name: "Lungs", system: "Respiratory", icon: AirVent, status: "ok", metric: "SpO₂ 98% · RR 16/min", lastChecked: "Apr 12, 2026", detail: "No respiratory concerns reported. SpO2 stable (98%)." },
+  { id: "eyes", name: "Eyes", system: "Ophthalmic", icon: Eye, status: "treated", metric: "Visual acuity 20/25", lastChecked: "Mar 04, 2026", detail: "Mild strain noted previously. Managed with rest + hydration." },
+  { id: "ears", name: "Ears", system: "ENT", icon: Ear, status: "na", metric: "No data on file", lastChecked: "—", detail: "No recent data available." },
+  { id: "teeth", name: "Teeth", system: "Dental", icon: Smile, status: "na", metric: "Records not linked", lastChecked: "—", detail: "Dental records not connected yet." },
+  { id: "bones", name: "Bones", system: "Musculoskeletal", icon: Bone, status: "ok", metric: "BMD T-score: −0.3", lastChecked: "Jan 18, 2026", detail: "No musculoskeletal alerts flagged." },
+  { id: "hands", name: "Hands", system: "Peripheral", icon: Hand, status: "ok", metric: "Grip strength normal", lastChecked: "Apr 08, 2026", detail: "No issues reported." },
+  { id: "feet", name: "Feet", system: "Peripheral", icon: Footprints, status: "ok", metric: "Sensation intact", lastChecked: "Apr 08, 2026", detail: "Mobility normal. No neuropathy indicators." },
 ];
+
+const STATUS_META: Record<BodyPartStatus, { label: string; dot: string; pillBg: string; pillText: string; ring: string }> = {
+  ok:      { label: "Normal",   dot: "bg-emerald-500", pillBg: "bg-emerald-50",  pillText: "text-emerald-700", ring: "ring-emerald-200" },
+  treated: { label: "Watch",    dot: "bg-amber-500",   pillBg: "bg-amber-50",    pillText: "text-amber-700",   ring: "ring-amber-200" },
+  alert:   { label: "Alert",    dot: "bg-red-500",     pillBg: "bg-red-50",      pillText: "text-red-700",     ring: "ring-red-200" },
+  na:      { label: "No data",  dot: "bg-slate-300",   pillBg: "bg-slate-50",    pillText: "text-slate-600",   ring: "ring-slate-200" },
+};
 
 function BodyPartStatusIcon({ status }: { status: BodyPartStatus }) {
   if (status === "ok") return <CheckCircle2 className="w-4 h-4 text-success" aria-label="Normal" />;

@@ -282,7 +282,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <motion.nav
-        className="fixed top-0 w-full z-50 bg-[#d94a72] shadow-sm"
+        className="fixed top-0 w-full z-50 bg-[#1E5AA8] shadow-md border-b border-[#164a8a]"
         initial={{ y: -100 }}
         animate={{ y: navVisible ? 0 : -100 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -292,10 +292,10 @@ const Landing = () => {
             <Logo variant="white" size="md" />
           </Link>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" className="text-sm font-semibold text-white hover:bg-white/20 hover:text-white border-0 shadow-none" asChild>
+            <Button variant="ghost" className="text-sm font-semibold text-white hover:bg-white/15 hover:text-white border-0 shadow-none" asChild>
               <Link to="/patient-login">Patient Login</Link>
             </Button>
-            <Button className="hidden sm:inline-flex text-sm font-semibold bg-white text-[#1E293B] hover:bg-white/90 border-0 shadow-none" asChild>
+            <Button className="hidden sm:inline-flex text-sm font-semibold bg-white text-[#1E5AA8] hover:bg-white/90 border-0 shadow-none" asChild>
               <Link to="/clinical-portal">Clinical Portal</Link>
             </Button>
           </div>
@@ -344,10 +344,14 @@ const Landing = () => {
               <div className="flex items-center justify-center mb-5">
                 <Logo variant="with-text" size="3xl" />
               </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-[#1E5AA8]/10 border border-[#1E5AA8]/20">
+                <Shield className="w-3.5 h-3.5 text-[#1E5AA8]" />
+                <span className="text-xs font-semibold text-[#1E5AA8] tracking-wide">HIPAA-COMPLIANT · SOC 2 TYPE II · END-TO-END ENCRYPTED</span>
+              </div>
               <h1 className="text-4xl sm:text-5xl lg:text-[44px] 2xl:text-[56px] font-display tracking-tight leading-[1.15] text-foreground mb-6" style={{ fontWeight: titleWeight }}>
-                The platform that secures
+                The clinical platform built for
                 <br />
-                your medical{" "}
+                trusted medical{" "}
                 <span className="inline-block relative translate-y-[8px]" style={{ minWidth: "7ch" }}>
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -365,16 +369,19 @@ const Landing = () => {
                 </span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg mx-auto mb-8 leading-relaxed">
-                Patient-controlled access with AI-assisted diagnostics.
-                Retrieval (RAG) keeps summaries grounded in your verified records.
+                Patient-controlled access with AI-assisted diagnostics. Retrieval-grounded summaries (RAG) and clinician-verified records — secure by default.
               </p>
               <div className="flex items-center justify-center gap-3">
-                <Button size="lg" className="text-base font-semibold px-8 h-12 shadow-sticker-elevated-pink active:shadow-pop-active active:translate-x-[2px] active:translate-y-[2px]" asChild>
-                  <Link to="/patient-login">Enter Portal <ArrowRight className="ml-2 w-4 h-4" /></Link>
+                <Button size="lg" className="text-base font-semibold px-8 h-12 bg-[#1E5AA8] hover:bg-[#164a8a] text-white border-2 border-foreground shadow-sticker-elevated active:shadow-pop-active active:translate-x-[2px] active:translate-y-[2px]" asChild>
+                  <Link to="/patient-login">Enter Patient Portal <ArrowRight className="ml-2 w-4 h-4" /></Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-base font-semibold px-8 h-12 text-[#1E293B] border-2 border-foreground shadow-sticker-elevated active:shadow-pop-active active:translate-x-[2px] active:translate-y-[2px]" asChild>
                   <Link to="/clinical-portal">Clinical Access</Link>
                 </Button>
+              </div>
+              <div className="flex items-center justify-center gap-6 mt-8 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Trusted by 240+ clinics</span>
+                <span className="hidden sm:inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8]" /> 1.2M patient records secured</span>
               </div>
             </motion.div>
           </div>

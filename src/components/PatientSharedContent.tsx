@@ -79,22 +79,32 @@ type BodyPartStatus = "ok" | "alert" | "treated" | "na";
 type BodyPartItem = {
   id: string;
   name: string;
+  system: string;
   icon: React.ComponentType<{ className?: string }>;
   status: BodyPartStatus;
+  metric: string;
+  lastChecked: string;
   detail: string;
 };
 
 const BODY_PARTS: BodyPartItem[] = [
-  { id: "brain", name: "Brain", icon: Brain, status: "ok", detail: "Neuro screen normal. No red flags detected." },
-  { id: "heart", name: "Heart", icon: HeartPulse, status: "alert", detail: "Elevated BP trend (142/91). Monitor + adjust meds." },
-  { id: "lungs", name: "Lungs", icon: AirVent, status: "ok", detail: "No respiratory concerns reported. SpO2 stable (98%)." },
-  { id: "eyes", name: "Eyes", icon: Eye, status: "treated", detail: "Mild strain noted previously. Managed with rest + hydration." },
-  { id: "ears", name: "Ears", icon: Ear, status: "na", detail: "No recent data available." },
-  { id: "teeth", name: "Teeth", icon: Smile, status: "na", detail: "Dental records not connected yet." },
-  { id: "bones", name: "Bones", icon: Bone, status: "ok", detail: "No musculoskeletal alerts flagged." },
-  { id: "hands", name: "Hands", icon: Hand, status: "ok", detail: "No issues reported." },
-  { id: "feet", name: "Feet", icon: Footprints, status: "ok", detail: "Mobility normal. No neuropathy indicators." },
+  { id: "brain", name: "Brain", system: "Neurological", icon: Brain, status: "ok", metric: "Cognitive screen: WNL", lastChecked: "Apr 12, 2026", detail: "Neuro screen normal. No red flags detected." },
+  { id: "heart", name: "Heart", system: "Cardiovascular", icon: HeartPulse, status: "alert", metric: "BP 142/91 mmHg · HR 78", lastChecked: "Apr 12, 2026", detail: "Elevated BP trend (142/91). Monitor + adjust meds." },
+  { id: "lungs", name: "Lungs", system: "Respiratory", icon: AirVent, status: "ok", metric: "SpO₂ 98% · RR 16/min", lastChecked: "Apr 12, 2026", detail: "No respiratory concerns reported. SpO2 stable (98%)." },
+  { id: "eyes", name: "Eyes", system: "Ophthalmic", icon: Eye, status: "treated", metric: "Visual acuity 20/25", lastChecked: "Mar 04, 2026", detail: "Mild strain noted previously. Managed with rest + hydration." },
+  { id: "ears", name: "Ears", system: "ENT", icon: Ear, status: "na", metric: "No data on file", lastChecked: "—", detail: "No recent data available." },
+  { id: "teeth", name: "Teeth", system: "Dental", icon: Smile, status: "na", metric: "Records not linked", lastChecked: "—", detail: "Dental records not connected yet." },
+  { id: "bones", name: "Bones", system: "Musculoskeletal", icon: Bone, status: "ok", metric: "BMD T-score: −0.3", lastChecked: "Jan 18, 2026", detail: "No musculoskeletal alerts flagged." },
+  { id: "hands", name: "Hands", system: "Peripheral", icon: Hand, status: "ok", metric: "Grip strength normal", lastChecked: "Apr 08, 2026", detail: "No issues reported." },
+  { id: "feet", name: "Feet", system: "Peripheral", icon: Footprints, status: "ok", metric: "Sensation intact", lastChecked: "Apr 08, 2026", detail: "Mobility normal. No neuropathy indicators." },
 ];
+
+const STATUS_META: Record<BodyPartStatus, { label: string; dot: string; pillBg: string; pillText: string; ring: string }> = {
+  ok:      { label: "Normal",   dot: "bg-emerald-500", pillBg: "bg-emerald-50",  pillText: "text-emerald-700", ring: "ring-emerald-200" },
+  treated: { label: "Watch",    dot: "bg-amber-500",   pillBg: "bg-amber-50",    pillText: "text-amber-700",   ring: "ring-amber-200" },
+  alert:   { label: "Alert",    dot: "bg-red-500",     pillBg: "bg-red-50",      pillText: "text-red-700",     ring: "ring-red-200" },
+  na:      { label: "No data",  dot: "bg-slate-300",   pillBg: "bg-slate-50",    pillText: "text-slate-600",   ring: "ring-slate-200" },
+};
 
 function BodyPartStatusIcon({ status }: { status: BodyPartStatus }) {
   if (status === "ok") return <CheckCircle2 className="w-4 h-4 text-success" aria-label="Normal" />;
@@ -170,60 +180,93 @@ export function PatientSharedContent() {
           <TabsContent value="anatomy" className="mt-0 outline-none">
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               <div className="bg-card w-full rounded-2xl border-2 border-foreground overflow-hidden relative shadow-sticker">
-                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-
-                <div className="relative p-5 sm:p-6">
-                  
-
-  
-                    
-                    <div className="p-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                        {BODY_PARTS.map((part) => {
-                          const Icon = part.icon;
-                          return (
-                            <Tooltip key={part.id}>
-                              <TooltipTrigger asChild>
-                                <button
-                                  type="button"
-                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border-2 border-foreground bg-background hover:bg-muted/40 shadow-pop-soft transition-bounce hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                                >
-                                  <span className="w-8 h-8 rounded-full border-2 border-foreground bg-primary/10 flex items-center justify-center shadow-pop shrink-0">
-                                    <Icon className="w-4.5 h-4.5 text-primary" />
-                                  </span>
-                                  <span className="flex-1 text-left text-sm font-semibold text-foreground truncate">
-                                    {part.name}
-                                  </span>
-                                  <span className="shrink-0">
-                                    <BodyPartStatusIcon status={part.status} />
-                                  </span>
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent side="top" className="max-w-[260px] text-xs leading-relaxed border-2 border-foreground shadow-pop-soft">
-                                <div className="font-semibold text-foreground mb-1">{part.name}</div>
-                                <div className="text-muted-foreground">{part.detail}</div>
-                              </TooltipContent>
-                            </Tooltip>
-                          );
-                        })}
-                      </div>
-
-                      <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-muted-foreground">
-                        <span className="inline-flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Normal
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-warning" /> Treated / watch
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <AlertTriangle className="w-3.5 h-3.5 text-destructive" /> Alert
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <MinusCircle className="w-3.5 h-3.5" /> N/A
-                        </span>
-                      </div>
+                {/* Clinical header bar */}
+                <div className="flex items-center justify-between gap-3 px-5 py-3 border-b-2 border-foreground bg-[#1E5AA8]/[0.04]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-[#1E5AA8]/10 border border-[#1E5AA8]/20 flex items-center justify-center">
+                      <Stethoscope className="w-4 h-4 text-[#1E5AA8]" />
                     </div>
-                  
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground leading-tight">Patient Longitudinal Record</h3>
+                      <p className="text-[11px] text-muted-foreground leading-tight">System-by-system review · Last sync 15 min ago</p>
+                    </div>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-3 text-[11px] font-mono text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> LIVE</span>
+                    <span>MRN · 00482-J·M</span>
+                  </div>
+                </div>
+
+                {/* Summary strip */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border border-b-2 border-foreground">
+                  {(["ok","treated","alert","na"] as BodyPartStatus[]).map((s) => {
+                    const count = BODY_PARTS.filter(p => p.status === s).length;
+                    const meta = STATUS_META[s];
+                    return (
+                      <div key={s} className="bg-card px-4 py-3 flex items-center gap-2.5">
+                        <span className={`w-2.5 h-2.5 rounded-full ${meta.dot}`} />
+                        <div className="flex flex-col leading-tight">
+                          <span className="text-lg font-bold font-mono text-foreground">{count}</span>
+                          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{meta.label}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Body system cards */}
+                <div className="p-4 sm:p-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {BODY_PARTS.map((part) => {
+                      const Icon = part.icon;
+                      const meta = STATUS_META[part.status];
+                      return (
+                        <Tooltip key={part.id}>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              className="group text-left w-full p-3.5 rounded-xl border border-border bg-background hover:border-[#1E5AA8]/40 hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E5AA8]"
+                            >
+                              <div className="flex items-start justify-between gap-2 mb-2.5">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                  <span className="w-9 h-9 rounded-lg bg-[#1E5AA8]/10 border border-[#1E5AA8]/15 flex items-center justify-center shrink-0 ring-2 ring-transparent group-hover:ring-[#1E5AA8]/10 transition">
+                                    <Icon className="w-[18px] h-[18px] text-[#1E5AA8]" />
+                                  </span>
+                                  <div className="min-w-0">
+                                    <div className="text-sm font-semibold text-foreground leading-tight truncate">{part.name}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{part.system}</div>
+                                  </div>
+                                </div>
+                                <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-semibold ${meta.pillBg} ${meta.pillText} ring-1 ${meta.ring} shrink-0`}>
+                                  <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
+                                  {meta.label}
+                                </span>
+                              </div>
+                              <div className="font-mono text-[11px] text-foreground/80 truncate border-t border-dashed border-border pt-2">
+                                {part.metric}
+                              </div>
+                              <div className="mt-1.5 flex items-center justify-between text-[10px] text-muted-foreground">
+                                <span>Last reviewed</span>
+                                <span className="font-mono">{part.lastChecked}</span>
+                              </div>
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[260px] text-xs leading-relaxed">
+                            <div className="font-semibold text-foreground mb-1">{part.name} · {part.system}</div>
+                            <div className="text-muted-foreground">{part.detail}</div>
+                          </TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between text-[11px] text-muted-foreground border-t border-border pt-3">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Info className="w-3.5 h-3.5" />
+                      Click any system to view full clinical notes.
+                    </span>
+                    <span className="font-mono hidden sm:block">9 systems · 1 alert · 1 watch</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -251,7 +294,7 @@ export function PatientSharedContent() {
                     <div className="flex items-center ml-2">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="hidden sm:flex" onClick={() => setSelectedReport(i)}>View Report</Button>
+                          <Button variant="outline" size="sm" className="hidden sm:flex border-2 border-foreground shadow-pop-soft hover:-translate-y-[1px] transition-bounce" onClick={() => setSelectedReport(i)}>View Report</Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-md">
                           <DialogHeader>

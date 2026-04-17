@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { EscalationTracker } from "@/components/EscalationTracker";
 
 export const MOCK_TIMELINE = [
   {
@@ -129,6 +130,9 @@ export function PatientSharedContent() {
             </TabsTrigger>
             <TabsTrigger value="history" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
               History & Records
+            </TabsTrigger>
+            <TabsTrigger value="escalation" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
+              Escalation Tracker
             </TabsTrigger>
             <TabsTrigger value="ml" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
               ML Models
@@ -276,6 +280,12 @@ export function PatientSharedContent() {
                 );
               })}
             </div>
+          </motion.div>
+        </TabsContent>
+
+        <TabsContent value="escalation" className="mt-0 outline-none">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+            <EscalationTracker />
           </motion.div>
         </TabsContent>
 

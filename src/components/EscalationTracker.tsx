@@ -323,22 +323,49 @@ export function EscalationTracker() {
             )}
           </div>
 
-          {/* Options */}
-          {!thinking && stepIdx < FLOW.length && (
-            <div className="border-t border-border bg-background p-3 space-y-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-1">
-                Choose the closest answer
-              </p>
-              {FLOW[stepIdx].options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => choose(i)}
-                  className="w-full text-left text-sm px-3 py-2.5 rounded-lg border border-border bg-card hover:border-[#1E5AA8]/50 hover:bg-[#1E5AA8]/5 transition-colors flex items-center justify-between gap-2"
+          {/* Suggested replies + free-text input */}
+          {stepIdx < FLOW.length && (
+            <div className="border-t border-border bg-background">
+              {!thinking && (
+                <div className="px-3 pt-3 pb-1">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5 flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-[#1E5AA8]" /> Suggested replies
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {FLOW[stepIdx].options.map((opt, i) => (
+                      <button
+                        key={i}
+                        onClick={() => chooseSuggestion(i)}
+                        className="text-xs px-2.5 py-1.5 rounded-full border border-border bg-card hover:border-[#1E5AA8]/50 hover:bg-[#1E5AA8]/5 text-foreground/80 transition-colors max-w-full truncate"
+                        title={opt}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <form
+                onSubmit={(e) => { e.preventDefault(); submitReply(input); }}
+                className="flex items-center gap-2 p-3"
+              >
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your answer in your own words…"
+                  disabled={thinking}
+                  className="flex-1 h-10 rounded-full border border-border bg-card px-4 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E5AA8]/40 disabled:opacity-50"
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={thinking || !input.trim()}
+                  className="h-10 w-10 rounded-full bg-[#1E5AA8] hover:bg-[#174a8a] text-white shrink-0"
                 >
-                  <span>{opt}</span>
-                  <Send className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                </button>
-              ))}
+                  <Send className="w-4 h-4" />
+                </Button>
+              </form>
             </div>
           )}
         </motion.div>

@@ -42,7 +42,7 @@ export default function ClinicalPortal() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
-      <header className="h-14 flex items-center px-4 sm:px-6 gap-4 shrink-0 bg-[#d94a72] shadow-sm">
+      <header className="h-14 flex items-center px-4 sm:px-6 gap-4 shrink-0 bg-[#1E5AA8] shadow-sm">
         <Link to="/" className="shrink-0 translate-y-[3px]">
           <Logo variant="white" size="md" />
         </Link>

@@ -51,7 +51,7 @@ export default function PatientDashboard() {
 
   return (
     <div className="min-h-screen bg-background relative flex flex-col">
-      <header className="h-14 flex items-center px-6 gap-4 z-20 shrink-0 bg-[#d94a72] shadow-sm">
+      <header className="h-14 flex items-center px-6 gap-4 z-20 shrink-0 bg-[#1E5AA8] shadow-sm">
         <Link to="/" className="shrink-0 translate-y-[3px]"><Logo variant="white" size="md" /></Link>
         <span className="text-xs text-white/80 font-bold uppercase tracking-widest border-l border-white/30 pl-4 leading-none">Patient Dashboard</span>
         <div className="flex-1" />

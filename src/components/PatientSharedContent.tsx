@@ -206,31 +206,54 @@ export function PatientSharedContent() {
                 })}
               </div>
 
-              {/* Clean body system cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {BODY_PARTS.map((part) => {
-                  const Icon = part.icon;
-                  const meta = STATUS_META[part.status];
+              {/* Grouped body system cards by status */}
+              <div className="space-y-6">
+                {(["alert", "treated", "ok", "na"] as BodyPartStatus[]).map((statusKey) => {
+                  const items = BODY_PARTS.filter((p) => p.status === statusKey);
+                  if (items.length === 0) return null;
+                  const meta = STATUS_META[statusKey];
+                  const sectionTitle =
+                    statusKey === "alert" ? "Needs attention"
+                    : statusKey === "treated" ? "Watch / under management"
+                    : statusKey === "ok" ? "Normal"
+                    : "No data on file";
                   return (
-                    <div
-                      key={part.id}
-                      className="group p-4 rounded-xl border border-border bg-card hover:border-[#1E5AA8]/40 hover:shadow-sm transition-all"
-                    >
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="w-10 h-10 rounded-full bg-[#1E5AA8]/10 flex items-center justify-center shrink-0">
-                          <Icon className="w-5 h-5 text-[#1E5AA8]" />
+                    <section key={statusKey}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
+                        <h3 className="text-sm font-semibold text-foreground">{sectionTitle}</h3>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.pillBg} ${meta.pillText}`}>
+                          {items.length}
                         </span>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-base font-semibold text-foreground leading-tight">{part.name}</div>
-                          <div className="text-xs text-muted-foreground">{part.system}</div>
-                        </div>
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.pillBg} ${meta.pillText}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
-                          {meta.label}
-                        </span>
+                        <div className="flex-1 h-px bg-border ml-2" />
                       </div>
-                      <p className="text-sm text-foreground/80 leading-snug">{part.detail}</p>
-                    </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {items.map((part) => {
+                          const Icon = part.icon;
+                          return (
+                            <div
+                              key={part.id}
+                              className="group p-4 rounded-xl border border-border bg-card hover:border-[#1E5AA8]/40 hover:shadow-sm transition-all"
+                            >
+                              <div className="flex items-center gap-3 mb-3">
+                                <span className="w-10 h-10 rounded-full bg-[#1E5AA8]/10 flex items-center justify-center shrink-0">
+                                  <Icon className="w-5 h-5 text-[#1E5AA8]" />
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                  <div className="text-base font-semibold text-foreground leading-tight">{part.name}</div>
+                                  <div className="text-xs text-muted-foreground">{part.system}</div>
+                                </div>
+                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.pillBg} ${meta.pillText}`}>
+                                  <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
+                                  {meta.label}
+                                </span>
+                              </div>
+                              <p className="text-sm text-foreground/80 leading-snug">{part.detail}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
                   );
                 })}
               </div>

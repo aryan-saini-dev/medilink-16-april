@@ -203,7 +203,7 @@ export default function ClinicalPortal() {
                     </p>
                   </div>
 
-                  <Button className="w-full h-9 text-[9px] font-bold uppercase tracking-widest" onClick={() => setChatOpen(true)}>
+              <Button className="w-full h-9 text-[9px] font-bold uppercase tracking-widest bg-[#1E5AA8] hover:bg-[#174a8a] text-white" onClick={() => setChatOpen(true)}>
                     <MessageSquare className="w-3.5 h-3.5 mr-2" /> Open AI Chat
                   </Button>
                 </div>
@@ -227,14 +227,14 @@ export default function ClinicalPortal() {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="absolute right-0 top-0 bottom-0 w-full sm:w-80 bg-card border-l-2 border-border z-50 flex flex-col shadow-2xl"
             >
-              <div className="flex items-center justify-between p-3 border-b-2 border-border bg-muted/30 shrink-0">
+              <div className="flex items-center justify-between p-3 border-b border-border bg-[#1E5AA8] shrink-0">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-primary/20 border-2 border-foreground flex items-center justify-center shadow-pop">
-                    <Bot className="w-3.5 h-3.5 text-primary" />
+                  <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
+                    <Bot className="w-3.5 h-3.5 text-white" />
                   </div>
-                  <h3 className="font-semibold text-xs">Clinical AI Assistant</h3>
+                  <h3 className="font-semibold text-xs text-white">Clinical AI Assistant</h3>
                 </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setChatOpen(false)}>
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-white hover:bg-white/15 hover:text-white" onClick={() => setChatOpen(false)}>
                   <X className="w-3.5 h-3.5" />
                 </Button>
               </div>
@@ -244,7 +244,7 @@ export default function ClinicalPortal() {
                   Hello Doctor. I am ready to assist with {MOCK_PATIENT.name}'s records. How can I help?
                 </div>
 
-                <div className="bg-primary text-primary-foreground p-2.5 rounded-lg rounded-tr-none w-[85%] text-xs self-end">
+                <div className="bg-[#1E5AA8] text-white p-2.5 rounded-lg rounded-tr-none w-[85%] text-xs self-end">
                   Summarize the patient's recent vitals trend and medication logic.
                 </div>
 
@@ -266,9 +266,9 @@ export default function ClinicalPortal() {
                 )}
               </div>
 
-              <div className="p-3 border-t-2 border-border bg-background flex gap-2 shrink-0">
-                <input type="text" placeholder="Type a message..." className="flex-1 h-8 rounded-md border border-input bg-transparent px-2.5 py-1 text-xs shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" disabled />
-                <Button size="sm" className="h-8 text-xs" disabled>Send</Button>
+              <div className="p-3 border-t border-border bg-background flex gap-2 shrink-0">
+                <input type="text" placeholder="Type a message..." className="flex-1 h-8 rounded-full border border-input bg-transparent px-3 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E5AA8]/40" disabled />
+                <Button size="sm" className="h-8 text-xs bg-[#1E5AA8] hover:bg-[#174a8a] text-white" disabled>Send</Button>
               </div>
             </motion.div>
           )}

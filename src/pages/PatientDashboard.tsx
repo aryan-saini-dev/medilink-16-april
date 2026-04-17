@@ -143,6 +143,12 @@ export default function PatientDashboard() {
           <PatientSharedContent />
         </div>
       </main>
+
+      <AIChatPanel
+        audience="patient"
+        patientName={(userName || MOCK_PATIENT.name).split(" ")[0]}
+        floating
+      />
     </div>
   );
 }

@@ -7,10 +7,9 @@ import {
   ArrowLeft,
   ScanLine,
   MessageSquare,
-  Bot,
-  X,
 } from "lucide-react";
 import { PatientSharedContent, MOCK_PATIENT } from "@/components/PatientSharedContent";
+import { AIChatPanel } from "@/components/AIChatPanel";
 import {
   Accordion,
   AccordionContent,
@@ -24,7 +23,6 @@ export default function ClinicalPortal() {
   const [state, setState] = useState<PortalState>("scanner");
   const [handshakeStep, setHandshakeStep] = useState(0);
   const [chatOpen, setChatOpen] = useState(false);
-  const [chatLoading, setChatLoading] = useState(true);
 
   useEffect(() => {
     if (state !== "handshake") return;
@@ -33,12 +31,6 @@ export default function ClinicalPortal() {
     const t3 = setTimeout(() => setState("hud"), 2400);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [state]);
-
-  useEffect(() => {
-    if (!chatOpen) { setChatLoading(true); return; }
-    const t = setTimeout(() => setChatLoading(false), 2000);
-    return () => clearTimeout(t);
-  }, [chatOpen]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
@@ -203,7 +195,7 @@ export default function ClinicalPortal() {
                     </p>
                   </div>
 
-              <Button className="w-full h-9 text-[9px] font-bold uppercase tracking-widest bg-[#1E5AA8] hover:bg-[#174a8a] text-white" onClick={() => setChatOpen(true)}>
+              <Button className="w-full h-9 text-[9px] font-bold uppercase tracking-widest bg-foreground hover:bg-foreground/90 text-background" onClick={() => setChatOpen(true)}>
                     <MessageSquare className="w-3.5 h-3.5 mr-2" /> Open AI Chat
                   </Button>
                 </div>
@@ -218,61 +210,13 @@ export default function ClinicalPortal() {
           )}
         </AnimatePresence>
 
-        <AnimatePresence>
-          {chatOpen && (
-            <motion.div
-              initial={{ x: "100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "100%", opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute right-0 top-0 bottom-0 w-full sm:w-80 bg-card border-l-2 border-border z-50 flex flex-col shadow-2xl"
-            >
-              <div className="flex items-center justify-between p-3 border-b border-border bg-[#1E5AA8] shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
-                    <Bot className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-xs text-white">Clinical AI Assistant</h3>
-                </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-white hover:bg-white/15 hover:text-white" onClick={() => setChatOpen(false)}>
-                  <X className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3 min-h-0">
-                <div className="bg-muted p-2.5 rounded-lg rounded-tl-none w-[85%] text-xs">
-                  Hello Doctor. I am ready to assist with {MOCK_PATIENT.name}'s records. How can I help?
-                </div>
-
-                <div className="bg-[#1E5AA8] text-white p-2.5 rounded-lg rounded-tr-none w-[85%] text-xs self-end">
-                  Summarize the patient's recent vitals trend and medication logic.
-                </div>
-
-                {chatLoading ? (
-                  <div className="bg-muted p-2.5 flex items-center gap-2 w-20 rounded-lg rounded-tl-none">
-                    <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground animate-bounce delay-75" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground animate-bounce delay-150" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground animate-bounce delay-300" />
-                  </div>
-                ) : (
-                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="bg-muted p-2.5 rounded-lg rounded-tl-none w-[90%] text-xs text-foreground/90 space-y-1.5 leading-relaxed">
-                    <p>Analysis for Jordan Mitchell:</p>
-                    <ul className="list-disc pl-3 space-y-0.5 my-1">
-                      <li><strong>Vitals:</strong> BP increased 130/82 → 142/91 over 3 months. HR and SpO2 stable.</li>
-                      <li><strong>Medication:</strong> Lisinopril dosage increased per protocol. No conflicts detected.</li>
-                    </ul>
-                    <p className="text-[10px] text-muted-foreground italic border-t border-border pt-1.5">AI-generated summary using retrieval from verified records (RAG).</p>
-                  </motion.div>
-                )}
-              </div>
-
-              <div className="p-3 border-t border-border bg-background flex gap-2 shrink-0">
-                <input type="text" placeholder="Type a message..." className="flex-1 h-8 rounded-full border border-input bg-transparent px-3 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E5AA8]/40" disabled />
-                <Button size="sm" className="h-8 text-xs bg-[#1E5AA8] hover:bg-[#174a8a] text-white" disabled>Send</Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <AIChatPanel
+          audience="clinician"
+          patientName={MOCK_PATIENT.name}
+          open={chatOpen}
+          onOpenChange={setChatOpen}
+          hideTrigger
+        />
       </div>
     </div>
   );

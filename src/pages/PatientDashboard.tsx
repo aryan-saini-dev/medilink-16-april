@@ -4,6 +4,7 @@ import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { User, Activity, Upload } from "lucide-react";
 import { PatientSharedContent, MOCK_PATIENT } from "@/components/PatientSharedContent";
+import { AIChatPanel } from "@/components/AIChatPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -142,6 +143,12 @@ export default function PatientDashboard() {
           <PatientSharedContent />
         </div>
       </main>
+
+      <AIChatPanel
+        audience="patient"
+        patientName={(userName || MOCK_PATIENT.name).split(" ")[0]}
+        floating
+      />
     </div>
   );
 }

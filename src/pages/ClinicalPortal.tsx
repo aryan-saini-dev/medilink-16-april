@@ -23,7 +23,6 @@ export default function ClinicalPortal() {
   const [state, setState] = useState<PortalState>("scanner");
   const [handshakeStep, setHandshakeStep] = useState(0);
   const [chatOpen, setChatOpen] = useState(false);
-  const [chatLoading, setChatLoading] = useState(true);
 
   useEffect(() => {
     if (state !== "handshake") return;
@@ -32,12 +31,6 @@ export default function ClinicalPortal() {
     const t3 = setTimeout(() => setState("hud"), 2400);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [state]);
-
-  useEffect(() => {
-    if (!chatOpen) { setChatLoading(true); return; }
-    const t = setTimeout(() => setChatLoading(false), 2000);
-    return () => clearTimeout(t);
-  }, [chatOpen]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">

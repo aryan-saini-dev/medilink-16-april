@@ -130,14 +130,29 @@ export function EscalationTracker() {
     setAnalyzeStep(0);
   };
 
-  const choose = (optionIdx: number) => {
-    const current = FLOW[stepIdx];
-    const userText = current.options[optionIdx];
-    const weight = current.weights[optionIdx];
+  const [input, setInput] = useState("");
 
-    setMessages((m) => [...m, { id: m.length, role: "user", text: userText }]);
-    const newScore = score + weight;
-    setScore(newScore);
+  // crude keyword scoring so free-text answers also affect risk
+  const scoreFreeText = (text: string): number => {
+    const t = text.toLowerCase();
+    let s = 0;
+    const heavy = ["metallic", "foamy", "swelling", "swollen", "ankle", "breathless", "shortness", "nausea", "itchy", "vomit", "blood", "severe", "constant", "all day", "very"];
+    const medium = ["tired", "fatigue", "bitter", "nocturia", "night", "appetite", "mild", "sometimes", "occasionally", "headache"];
+    const negate = ["no ", "none", "not really", "fine", "normal", "nothing"];
+    heavy.forEach(k => { if (t.includes(k)) s += 25; });
+    medium.forEach(k => { if (t.includes(k)) s += 12; });
+    negate.forEach(k => { if (t.includes(k)) s -= 8; });
+    return Math.max(s, 5); // any reply still nudges progress
+  };
+
+  const submitReply = (text: string, weightOverride?: number) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    const weight = weightOverride ?? scoreFreeText(trimmed);
+
+    setMessages((m) => [...m, { id: m.length, role: "user", text: trimmed }]);
+    setScore((prev) => prev + weight);
+    setInput("");
 
     setThinking(true);
     setTimeout(() => {
@@ -147,11 +162,15 @@ export function EscalationTracker() {
         setStepIdx(nextIdx);
         setMessages((m) => [...m, { id: m.length, role: "ai", text: FLOW[nextIdx].ai }]);
       } else {
-        // run analysis
         setStage("analyzing");
         runAnalysis();
       }
     }, 900);
+  };
+
+  const chooseSuggestion = (optionIdx: number) => {
+    const current = FLOW[stepIdx];
+    submitReply(current.options[optionIdx], current.weights[optionIdx]);
   };
 
   const runAnalysis = () => {

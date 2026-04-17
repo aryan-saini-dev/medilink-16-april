@@ -266,9 +266,9 @@ export default function ClinicalPortal() {
                 )}
               </div>
 
-              <div className="p-3 border-t-2 border-border bg-background flex gap-2 shrink-0">
-                <input type="text" placeholder="Type a message..." className="flex-1 h-8 rounded-md border border-input bg-transparent px-2.5 py-1 text-xs shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" disabled />
-                <Button size="sm" className="h-8 text-xs" disabled>Send</Button>
+              <div className="p-3 border-t border-border bg-background flex gap-2 shrink-0">
+                <input type="text" placeholder="Type a message..." className="flex-1 h-8 rounded-full border border-input bg-transparent px-3 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E5AA8]/40" disabled />
+                <Button size="sm" className="h-8 text-xs bg-[#1E5AA8] hover:bg-[#174a8a] text-white" disabled>Send</Button>
               </div>
             </motion.div>
           )}

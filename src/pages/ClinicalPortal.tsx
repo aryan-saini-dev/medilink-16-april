@@ -203,7 +203,7 @@ export default function ClinicalPortal() {
                     </p>
                   </div>
 
-              <Button className="w-full h-9 text-[9px] font-bold uppercase tracking-widest bg-[#1E5AA8] hover:bg-[#174a8a] text-white" onClick={() => setChatOpen(true)}>
+              <Button className="w-full h-9 text-[9px] font-bold uppercase tracking-widest bg-foreground hover:bg-foreground/90 text-background" onClick={() => setChatOpen(true)}>
                     <MessageSquare className="w-3.5 h-3.5 mr-2" /> Open AI Chat
                   </Button>
                 </div>

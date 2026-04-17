@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { PatientSharedContent, MOCK_PATIENT } from "@/components/PatientSharedContent";
+import { AIChatPanel } from "@/components/AIChatPanel";
 import {
   Accordion,
   AccordionContent,

@@ -130,14 +130,29 @@ export function EscalationTracker() {
     setAnalyzeStep(0);
   };
 
-  const choose = (optionIdx: number) => {
-    const current = FLOW[stepIdx];
-    const userText = current.options[optionIdx];
-    const weight = current.weights[optionIdx];
+  const [input, setInput] = useState("");
 
-    setMessages((m) => [...m, { id: m.length, role: "user", text: userText }]);
-    const newScore = score + weight;
-    setScore(newScore);
+  // crude keyword scoring so free-text answers also affect risk
+  const scoreFreeText = (text: string): number => {
+    const t = text.toLowerCase();
+    let s = 0;
+    const heavy = ["metallic", "foamy", "swelling", "swollen", "ankle", "breathless", "shortness", "nausea", "itchy", "vomit", "blood", "severe", "constant", "all day", "very"];
+    const medium = ["tired", "fatigue", "bitter", "nocturia", "night", "appetite", "mild", "sometimes", "occasionally", "headache"];
+    const negate = ["no ", "none", "not really", "fine", "normal", "nothing"];
+    heavy.forEach(k => { if (t.includes(k)) s += 25; });
+    medium.forEach(k => { if (t.includes(k)) s += 12; });
+    negate.forEach(k => { if (t.includes(k)) s -= 8; });
+    return Math.max(s, 5); // any reply still nudges progress
+  };
+
+  const submitReply = (text: string, weightOverride?: number) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    const weight = weightOverride ?? scoreFreeText(trimmed);
+
+    setMessages((m) => [...m, { id: m.length, role: "user", text: trimmed }]);
+    setScore((prev) => prev + weight);
+    setInput("");
 
     setThinking(true);
     setTimeout(() => {
@@ -147,11 +162,15 @@ export function EscalationTracker() {
         setStepIdx(nextIdx);
         setMessages((m) => [...m, { id: m.length, role: "ai", text: FLOW[nextIdx].ai }]);
       } else {
-        // run analysis
         setStage("analyzing");
         runAnalysis();
       }
     }, 900);
+  };
+
+  const chooseSuggestion = (optionIdx: number) => {
+    const current = FLOW[stepIdx];
+    submitReply(current.options[optionIdx], current.weights[optionIdx]);
   };
 
   const runAnalysis = () => {
@@ -304,22 +323,49 @@ export function EscalationTracker() {
             )}
           </div>
 
-          {/* Options */}
-          {!thinking && stepIdx < FLOW.length && (
-            <div className="border-t border-border bg-background p-3 space-y-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-1">
-                Choose the closest answer
-              </p>
-              {FLOW[stepIdx].options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => choose(i)}
-                  className="w-full text-left text-sm px-3 py-2.5 rounded-lg border border-border bg-card hover:border-[#1E5AA8]/50 hover:bg-[#1E5AA8]/5 transition-colors flex items-center justify-between gap-2"
+          {/* Suggested replies + free-text input */}
+          {stepIdx < FLOW.length && (
+            <div className="border-t border-border bg-background">
+              {!thinking && (
+                <div className="px-3 pt-3 pb-1">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5 flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-[#1E5AA8]" /> Suggested replies
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {FLOW[stepIdx].options.map((opt, i) => (
+                      <button
+                        key={i}
+                        onClick={() => chooseSuggestion(i)}
+                        className="text-xs px-2.5 py-1.5 rounded-full border border-border bg-card hover:border-[#1E5AA8]/50 hover:bg-[#1E5AA8]/5 text-foreground/80 transition-colors max-w-full truncate"
+                        title={opt}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <form
+                onSubmit={(e) => { e.preventDefault(); submitReply(input); }}
+                className="flex items-center gap-2 p-3"
+              >
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your answer in your own words…"
+                  disabled={thinking}
+                  className="flex-1 h-10 rounded-full border border-border bg-card px-4 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E5AA8]/40 disabled:opacity-50"
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={thinking || !input.trim()}
+                  className="h-10 w-10 rounded-full bg-[#1E5AA8] hover:bg-[#174a8a] text-white shrink-0"
                 >
-                  <span>{opt}</span>
-                  <Send className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                </button>
-              ))}
+                  <Send className="w-4 h-4" />
+                </Button>
+              </form>
             </div>
           )}
         </motion.div>

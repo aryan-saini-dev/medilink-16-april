@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   AlertTriangle,
   Activity,
@@ -21,10 +23,15 @@ import {
   CheckCircle2,
   MinusCircle,
   Info,
+  ScanLine,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { EscalationTracker } from "@/components/EscalationTracker";
+import anatomyFull from "@/assets/anatomy-full.png";
+import anatomyCardio from "@/assets/anatomy-cardio.png";
+import anatomyHead from "@/assets/anatomy-head.png";
+import anatomyLower from "@/assets/anatomy-lower.png";
 
 export const MOCK_TIMELINE = [
   {

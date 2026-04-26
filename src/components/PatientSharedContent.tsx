@@ -225,9 +225,9 @@ export function PatientSharedContent() {
           <TabsContent value="anatomy" className="mt-0 outline-none">
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               {/* Section heading + view toggle */}
-              <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
+              <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
                 <div>
-                  <h2 className="font-display font-bold text-foreground text-lg leading-tight">
+                  <h2 className="font-display font-bold text-foreground text-xl leading-tight">
                     {anatomyViewer ? "Anatomy viewer" : "Body systems overview"}
                   </h2>
                   <p className="text-sm text-muted-foreground">
@@ -238,17 +238,38 @@ export function PatientSharedContent() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="hidden sm:inline-flex text-xs text-muted-foreground font-mono">Updated 15 min ago</span>
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card">
-                    <ScanLine className="w-4 h-4 text-[#1E5AA8]" />
-                    <Label htmlFor="anatomy-toggle" className="text-xs font-medium text-foreground cursor-pointer select-none">
-                      Anatomy viewer
-                    </Label>
-                    <Switch
-                      id="anatomy-toggle"
-                      checked={anatomyViewer}
-                      onCheckedChange={setAnatomyViewer}
-                      className="data-[state=checked]:bg-[#1E5AA8]"
-                    />
+                  {/* Playful segmented toggle — high visibility */}
+                  <div
+                    role="tablist"
+                    aria-label="View mode"
+                    className="inline-flex items-center gap-1 p-1 rounded-full border-2 border-foreground bg-card shadow-pop"
+                  >
+                    <button
+                      role="tab"
+                      aria-selected={!anatomyViewer}
+                      onClick={() => setAnatomyViewer(false)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all ${
+                        !anatomyViewer
+                          ? "bg-foreground text-background shadow-pop-active"
+                          : "text-foreground/70 hover:text-foreground"
+                      }`}
+                    >
+                      <Activity className="w-3.5 h-3.5" />
+                      Overview
+                    </button>
+                    <button
+                      role="tab"
+                      aria-selected={anatomyViewer}
+                      onClick={() => setAnatomyViewer(true)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all ${
+                        anatomyViewer
+                          ? "bg-primary text-primary-foreground shadow-pop-active"
+                          : "text-foreground/70 hover:text-foreground"
+                      }`}
+                    >
+                      <ScanLine className="w-3.5 h-3.5" />
+                      Anatomy
+                    </button>
                   </div>
                 </div>
               </div>
@@ -278,39 +299,39 @@ export function PatientSharedContent() {
                             <button
                               key={r.key}
                               onClick={() => setActiveRegion(r.key as typeof activeRegion)}
-                              className={`w-full text-left flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                              className={`w-full text-left flex items-center gap-3 p-3 rounded-2xl border-2 transition-all transition-bounce ${
                                 active
-                                  ? "border-[#1E5AA8] bg-[#1E5AA8]/5 shadow-sm"
-                                  : "border-border bg-card hover:border-[#1E5AA8]/40"
+                                  ? "border-foreground bg-primary/10 shadow-pop"
+                                  : "border-foreground/20 bg-card hover:border-foreground hover:shadow-pop-active"
                               }`}
                             >
-                              <span className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${active ? "bg-[#1E5AA8] text-white" : "bg-[#1E5AA8]/10 text-[#1E5AA8]"}`}>
-                                <Icon className="w-4 h-4" />
+                              <span className={`w-10 h-10 rounded-full border-2 border-foreground flex items-center justify-center shrink-0 ${active ? "bg-primary text-primary-foreground" : "bg-tertiary text-foreground"}`}>
+                                <Icon className="w-4 h-4" strokeWidth={2.5} />
                               </span>
                               <div className="min-w-0 flex-1">
-                                <div className="text-sm font-semibold text-foreground leading-tight">{r.label}</div>
+                                <div className="text-sm font-display font-bold text-foreground leading-tight">{r.label}</div>
                                 <div className="text-[11px] text-muted-foreground truncate">{r.desc}</div>
                               </div>
                               {active && (
-                                <span className="text-[10px] font-bold tracking-wider text-[#1E5AA8]">ACTIVE</span>
+                                <span className="text-[10px] font-bold tracking-wider text-primary">ACTIVE</span>
                               )}
                             </button>
                           );
                         })}
 
                         {/* Quick stats card */}
-                        <div className="mt-4 p-4 rounded-xl border border-border bg-card">
-                          <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase mb-3">Quick stats</p>
+                        <div className="mt-4 p-4 rounded-2xl border-2 border-foreground bg-card shadow-pop">
+                          <p className="text-[11px] font-display font-bold tracking-widest text-foreground uppercase mb-3">Quick stats</p>
                           <div className="space-y-2 text-sm">
-                            <div className="flex justify-between"><span className="text-muted-foreground">Vitals</span><span className="font-semibold text-[#1E5AA8]">7 Active</span></div>
-                            <div className="flex justify-between"><span className="text-muted-foreground">Alerts</span><span className="font-semibold text-red-600">{BODY_PARTS.filter(p=>p.status==='alert').length} High</span></div>
-                            <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="font-semibold text-amber-600">Monitoring</span></div>
+                            <div className="flex justify-between"><span className="text-muted-foreground">Vitals</span><span className="font-bold text-primary">7 Active</span></div>
+                            <div className="flex justify-between"><span className="text-muted-foreground">Alerts</span><span className="font-bold text-destructive">{BODY_PARTS.filter(p=>p.status==='alert').length} High</span></div>
+                            <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="font-bold text-tertiary-foreground bg-tertiary px-2 rounded-full">Monitoring</span></div>
                           </div>
                         </div>
                       </div>
 
                       {/* Anatomy canvas */}
-                      <div className="relative rounded-2xl border border-border bg-white overflow-hidden min-h-[520px] flex items-center justify-center p-6">
+                      <div className="relative rounded-2xl border-2 border-foreground bg-white overflow-hidden min-h-[520px] flex items-center justify-center p-6 shadow-pop">
                         {/* Body image — sits behind the overlays */}
                         <motion.img
                           key={activeRegion}
@@ -329,8 +350,8 @@ export function PatientSharedContent() {
                         />
 
                         {/* Region label — above image */}
-                        <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-border text-[11px] font-medium text-[#1E5AA8] shadow-sm">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8] animate-pulse" />
+                        <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border-2 border-foreground text-[11px] font-bold text-foreground shadow-pop-active">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                           {activeRegion === "full" && "Full body view"}
                           {activeRegion === "cardio" && "Cardio-pulmonary view"}
                           {activeRegion === "lower" && "Lower body view"}

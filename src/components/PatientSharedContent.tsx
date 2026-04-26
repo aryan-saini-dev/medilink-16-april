@@ -192,80 +192,200 @@ export function PatientSharedContent() {
 
           <TabsContent value="anatomy" className="mt-0 outline-none">
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-              {/* Section heading */}
-              <div className="flex items-end justify-between mb-5">
+              {/* Section heading + view toggle */}
+              <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
                 <div>
-                  <h2 className="font-display font-bold text-foreground text-lg leading-tight">Body systems overview</h2>
-                  <p className="text-sm text-muted-foreground">A simple, system-by-system snapshot of your health.</p>
+                  <h2 className="font-display font-bold text-foreground text-lg leading-tight">
+                    {anatomyViewer ? "Anatomy viewer" : "Body systems overview"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {anatomyViewer
+                      ? "Explore patient anatomy by region. Hover or tap a hotspot for details."
+                      : "A simple, system-by-system snapshot of your health."}
+                  </p>
                 </div>
-                <span className="hidden sm:inline-flex text-xs text-muted-foreground font-mono">Updated 15 min ago</span>
+                <div className="flex items-center gap-3">
+                  <span className="hidden sm:inline-flex text-xs text-muted-foreground font-mono">Updated 15 min ago</span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card">
+                    <ScanLine className="w-4 h-4 text-[#1E5AA8]" />
+                    <Label htmlFor="anatomy-toggle" className="text-xs font-medium text-foreground cursor-pointer select-none">
+                      Anatomy viewer
+                    </Label>
+                    <Switch
+                      id="anatomy-toggle"
+                      checked={anatomyViewer}
+                      onCheckedChange={setAnatomyViewer}
+                      className="data-[state=checked]:bg-[#1E5AA8]"
+                    />
+                  </div>
+                </div>
               </div>
 
-              {/* Quick status legend */}
-              <div className="flex flex-wrap items-center gap-2 mb-5">
-                {(["alert","treated","ok","na"] as BodyPartStatus[]).map((s) => {
-                  const count = BODY_PARTS.filter(p => p.status === s).length;
-                  const meta = STATUS_META[s];
-                  return (
-                    <span key={s} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${meta.pillBg} ${meta.pillText} ring-1 ${meta.ring}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
-                      {count} {meta.label}
-                    </span>
-                  );
-                })}
-              </div>
-
-              {/* Grouped body system cards by status */}
-              <div className="space-y-6">
-                {(["alert", "treated", "ok", "na"] as BodyPartStatus[]).map((statusKey) => {
-                  const items = BODY_PARTS.filter((p) => p.status === statusKey);
-                  if (items.length === 0) return null;
-                  const meta = STATUS_META[statusKey];
-                  const sectionTitle =
-                    statusKey === "alert" ? "Needs attention"
-                    : statusKey === "treated" ? "Watch / under management"
-                    : statusKey === "ok" ? "Normal"
-                    : "No data on file";
-                  return (
-                    <section key={statusKey}>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
-                        <h3 className="text-sm font-semibold text-foreground">{sectionTitle}</h3>
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.pillBg} ${meta.pillText}`}>
-                          {items.length}
-                        </span>
-                        <div className="flex-1 h-px bg-border ml-2" />
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {items.map((part) => {
-                          const Icon = part.icon;
+              <AnimatePresence mode="wait">
+                {anatomyViewer ? (
+                  <motion.div
+                    key="viewer"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5">
+                      {/* Region selector */}
+                      <div className="space-y-2">
+                        <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase mb-2">Anatomical navigation</p>
+                        {[
+                          { key: "full", label: "Full Body", desc: "Complete skeletal & organ overview", icon: Activity },
+                          { key: "cardio", label: "Cardio-Pulmonary", desc: "Heart, lungs & thoracic", icon: HeartPulse },
+                          { key: "lower", label: "Lower Body", desc: "Pelvis, legs & feet", icon: Footprints },
+                          { key: "head", label: "Head & Dental", desc: "Brain, eyes & jaw", icon: Brain },
+                        ].map((r) => {
+                          const Icon = r.icon;
+                          const active = activeRegion === r.key;
                           return (
-                            <div
-                              key={part.id}
-                              className="group p-4 rounded-xl border border-border bg-card hover:border-[#1E5AA8]/40 hover:shadow-sm transition-all"
+                            <button
+                              key={r.key}
+                              onClick={() => setActiveRegion(r.key as typeof activeRegion)}
+                              className={`w-full text-left flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                                active
+                                  ? "border-[#1E5AA8] bg-[#1E5AA8]/5 shadow-sm"
+                                  : "border-border bg-card hover:border-[#1E5AA8]/40"
+                              }`}
                             >
-                              <div className="flex items-center gap-3 mb-3">
-                                <span className="w-10 h-10 rounded-full bg-[#1E5AA8]/10 flex items-center justify-center shrink-0">
-                                  <Icon className="w-5 h-5 text-[#1E5AA8]" />
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                  <div className="text-base font-semibold text-foreground leading-tight">{part.name}</div>
-                                  <div className="text-xs text-muted-foreground">{part.system}</div>
-                                </div>
-                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.pillBg} ${meta.pillText}`}>
-                                  <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
-                                  {meta.label}
-                                </span>
+                              <span className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${active ? "bg-[#1E5AA8] text-white" : "bg-[#1E5AA8]/10 text-[#1E5AA8]"}`}>
+                                <Icon className="w-4 h-4" />
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-sm font-semibold text-foreground leading-tight">{r.label}</div>
+                                <div className="text-[11px] text-muted-foreground truncate">{r.desc}</div>
                               </div>
-                              <p className="text-sm text-foreground/80 leading-snug">{part.detail}</p>
-                            </div>
+                              {active && (
+                                <span className="text-[10px] font-bold tracking-wider text-[#1E5AA8]">ACTIVE</span>
+                              )}
+                            </button>
                           );
                         })}
+
+                        {/* Quick stats card */}
+                        <div className="mt-4 p-4 rounded-xl border border-border bg-card">
+                          <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase mb-3">Quick stats</p>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between"><span className="text-muted-foreground">Vitals</span><span className="font-semibold text-[#1E5AA8]">7 Active</span></div>
+                            <div className="flex justify-between"><span className="text-muted-foreground">Alerts</span><span className="font-semibold text-red-600">{BODY_PARTS.filter(p=>p.status==='alert').length} High</span></div>
+                            <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="font-semibold text-amber-600">Monitoring</span></div>
+                          </div>
+                        </div>
                       </div>
-                    </section>
-                  );
-                })}
-              </div>
+
+                      {/* Anatomy canvas */}
+                      <div className="relative rounded-2xl border border-border bg-gradient-to-br from-[#1E5AA8]/5 via-white to-[#1E5AA8]/10 overflow-hidden min-h-[520px] flex items-center justify-center p-6">
+                        <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur border border-border text-[11px] font-medium text-[#1E5AA8]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8] animate-pulse" />
+                          {activeRegion === "full" && "Full body view"}
+                          {activeRegion === "cardio" && "Cardio-pulmonary view"}
+                          {activeRegion === "lower" && "Lower body view"}
+                          {activeRegion === "head" && "Head & dental view"}
+                        </div>
+
+                        <motion.img
+                          key={activeRegion}
+                          initial={{ opacity: 0, scale: 0.96 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.35 }}
+                          src={
+                            activeRegion === "full" ? anatomyFull :
+                            activeRegion === "cardio" ? anatomyCardio :
+                            activeRegion === "lower" ? anatomyLower :
+                            anatomyHead
+                          }
+                          alt={`Anatomy view: ${activeRegion}`}
+                          className="max-h-[520px] w-auto object-contain drop-shadow-xl"
+                          loading="lazy"
+                        />
+
+                        {/* Hover hint */}
+                        <div className="absolute bottom-4 right-4 text-xs text-muted-foreground italic max-w-[180px] text-right">
+                          Hover over any vital node<br />to view detailed metrics
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="overview"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* Quick status legend */}
+                    <div className="flex flex-wrap items-center gap-2 mb-5">
+                      {(["alert","treated","ok","na"] as BodyPartStatus[]).map((s) => {
+                        const count = BODY_PARTS.filter(p => p.status === s).length;
+                        const meta = STATUS_META[s];
+                        return (
+                          <span key={s} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${meta.pillBg} ${meta.pillText} ring-1 ${meta.ring}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
+                            {count} {meta.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+
+                    {/* Grouped body system cards by status */}
+                    <div className="space-y-6">
+                      {(["alert", "treated", "ok", "na"] as BodyPartStatus[]).map((statusKey) => {
+                        const items = BODY_PARTS.filter((p) => p.status === statusKey);
+                        if (items.length === 0) return null;
+                        const meta = STATUS_META[statusKey];
+                        const sectionTitle =
+                          statusKey === "alert" ? "Needs attention"
+                          : statusKey === "treated" ? "Watch / under management"
+                          : statusKey === "ok" ? "Normal"
+                          : "No data on file";
+                        return (
+                          <section key={statusKey}>
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
+                              <h3 className="text-sm font-semibold text-foreground">{sectionTitle}</h3>
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.pillBg} ${meta.pillText}`}>
+                                {items.length}
+                              </span>
+                              <div className="flex-1 h-px bg-border ml-2" />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                              {items.map((part) => {
+                                const Icon = part.icon;
+                                return (
+                                  <div
+                                    key={part.id}
+                                    className="group p-4 rounded-xl border border-border bg-card hover:border-[#1E5AA8]/40 hover:shadow-sm transition-all"
+                                  >
+                                    <div className="flex items-center gap-3 mb-3">
+                                      <span className="w-10 h-10 rounded-full bg-[#1E5AA8]/10 flex items-center justify-center shrink-0">
+                                        <Icon className="w-5 h-5 text-[#1E5AA8]" />
+                                      </span>
+                                      <div className="min-w-0 flex-1">
+                                        <div className="text-base font-semibold text-foreground leading-tight">{part.name}</div>
+                                        <div className="text-xs text-muted-foreground">{part.system}</div>
+                                      </div>
+                                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.pillBg} ${meta.pillText}`}>
+                                        <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
+                                        {meta.label}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-foreground/80 leading-snug">{part.detail}</p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </section>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           </TabsContent>
 

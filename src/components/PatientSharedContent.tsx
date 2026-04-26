@@ -225,9 +225,9 @@ export function PatientSharedContent() {
           <TabsContent value="anatomy" className="mt-0 outline-none">
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               {/* Section heading + view toggle */}
-              <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
+              <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
                 <div>
-                  <h2 className="font-display font-bold text-foreground text-lg leading-tight">
+                  <h2 className="font-display font-bold text-foreground text-xl leading-tight">
                     {anatomyViewer ? "Anatomy viewer" : "Body systems overview"}
                   </h2>
                   <p className="text-sm text-muted-foreground">
@@ -238,17 +238,38 @@ export function PatientSharedContent() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="hidden sm:inline-flex text-xs text-muted-foreground font-mono">Updated 15 min ago</span>
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card">
-                    <ScanLine className="w-4 h-4 text-[#1E5AA8]" />
-                    <Label htmlFor="anatomy-toggle" className="text-xs font-medium text-foreground cursor-pointer select-none">
-                      Anatomy viewer
-                    </Label>
-                    <Switch
-                      id="anatomy-toggle"
-                      checked={anatomyViewer}
-                      onCheckedChange={setAnatomyViewer}
-                      className="data-[state=checked]:bg-[#1E5AA8]"
-                    />
+                  {/* Playful segmented toggle — high visibility */}
+                  <div
+                    role="tablist"
+                    aria-label="View mode"
+                    className="inline-flex items-center gap-1 p-1 rounded-full border-2 border-foreground bg-card shadow-pop"
+                  >
+                    <button
+                      role="tab"
+                      aria-selected={!anatomyViewer}
+                      onClick={() => setAnatomyViewer(false)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all ${
+                        !anatomyViewer
+                          ? "bg-foreground text-background shadow-pop-active"
+                          : "text-foreground/70 hover:text-foreground"
+                      }`}
+                    >
+                      <Activity className="w-3.5 h-3.5" />
+                      Overview
+                    </button>
+                    <button
+                      role="tab"
+                      aria-selected={anatomyViewer}
+                      onClick={() => setAnatomyViewer(true)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all ${
+                        anatomyViewer
+                          ? "bg-primary text-primary-foreground shadow-pop-active"
+                          : "text-foreground/70 hover:text-foreground"
+                      }`}
+                    >
+                      <ScanLine className="w-3.5 h-3.5" />
+                      Anatomy
+                    </button>
                   </div>
                 </div>
               </div>

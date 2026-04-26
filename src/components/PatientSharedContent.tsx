@@ -125,6 +125,8 @@ export function PatientSharedContent() {
   const [selectedReport, setSelectedReport] = useState<number | null>(null);
   const [anatomyViewer, setAnatomyViewer] = useState(false);
   const [activeRegion, setActiveRegion] = useState<"full" | "head" | "cardio" | "lower">("full");
+
+  return (
     <TooltipProvider>
       <Tabs defaultValue="diagnostics" className="w-full">
         <div className="px-6 border-b-2 border-border mb-6">

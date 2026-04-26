@@ -310,7 +310,7 @@ export function PatientSharedContent() {
                       </div>
 
                       {/* Anatomy canvas */}
-                      <div className="relative rounded-2xl border border-border bg-slate-50 overflow-hidden min-h-[520px] flex items-center justify-center p-6">
+                      <div className="relative rounded-2xl border border-border bg-white overflow-hidden min-h-[520px] flex items-center justify-center p-6">
                         {/* Body image — sits behind the overlays */}
                         <motion.img
                           key={activeRegion}

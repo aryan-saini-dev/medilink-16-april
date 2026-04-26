@@ -114,6 +114,38 @@ const STATUS_META: Record<BodyPartStatus, { label: string; dot: string; pillBg: 
   na:      { label: "No data",  dot: "bg-slate-300",   pillBg: "bg-slate-50",    pillText: "text-slate-600",   ring: "ring-slate-200" },
 };
 
+type VitalNode = { top: string; left: string; label: string; metric: string; severity: "alert" | "watch" | "ok" };
+const VITAL_NODES: Record<"full" | "head" | "cardio" | "lower", VitalNode[]> = {
+  full: [
+    { top: "12%", left: "50%", label: "Brain",  metric: "Cognitive screen: WNL",     severity: "ok" },
+    { top: "32%", left: "44%", label: "Heart",  metric: "BP 142/91 · HR 78",         severity: "alert" },
+    { top: "34%", left: "58%", label: "Lungs",  metric: "SpO₂ 98% · RR 16/min",      severity: "ok" },
+    { top: "50%", left: "50%", label: "Spine",  metric: "Posture WNL",               severity: "ok" },
+    { top: "78%", left: "38%", label: "L. Hand",metric: "Grip strength normal",      severity: "ok" },
+    { top: "78%", left: "62%", label: "R. Hand",metric: "Grip strength normal",      severity: "ok" },
+  ],
+  cardio: [
+    { top: "42%", left: "50%", label: "Heart",  metric: "BP 142/91 · HR 78 (elevated)", severity: "alert" },
+    { top: "32%", left: "32%", label: "L. Lung",metric: "Clear · SpO₂ 98%",          severity: "ok" },
+    { top: "32%", left: "68%", label: "R. Lung",metric: "Clear · SpO₂ 98%",          severity: "ok" },
+    { top: "70%", left: "55%", label: "Stomach",metric: "No GI complaints",          severity: "ok" },
+  ],
+  lower: [
+    { top: "10%", left: "50%", label: "Pelvis",   metric: "Alignment normal",        severity: "ok" },
+    { top: "45%", left: "37%", label: "L. Knee",  metric: "Mild stiffness reported", severity: "watch" },
+    { top: "45%", left: "63%", label: "R. Knee",  metric: "Range of motion normal",  severity: "ok" },
+    { top: "92%", left: "40%", label: "L. Foot",  metric: "Sensation intact",        severity: "ok" },
+    { top: "92%", left: "60%", label: "R. Foot",  metric: "Sensation intact",        severity: "ok" },
+  ],
+  head: [
+    { top: "30%", left: "50%", label: "Brain",   metric: "Cognitive screen: WNL",    severity: "ok" },
+    { top: "55%", left: "44%", label: "L. Eye",  metric: "Acuity 20/25",             severity: "watch" },
+    { top: "55%", left: "62%", label: "R. Eye",  metric: "Acuity 20/20",             severity: "ok" },
+    { top: "82%", left: "55%", label: "Jaw",     metric: "Dental records pending",   severity: "ok" },
+  ],
+};
+
+
 function BodyPartStatusIcon({ status }: { status: BodyPartStatus }) {
   if (status === "ok") return <CheckCircle2 className="w-4 h-4 text-success" aria-label="Normal" />;
   if (status === "treated") return <CheckCircle2 className="w-4 h-4 text-warning" aria-label="Treated / watch" />;

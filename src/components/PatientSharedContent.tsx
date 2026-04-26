@@ -114,6 +114,38 @@ const STATUS_META: Record<BodyPartStatus, { label: string; dot: string; pillBg: 
   na:      { label: "No data",  dot: "bg-slate-300",   pillBg: "bg-slate-50",    pillText: "text-slate-600",   ring: "ring-slate-200" },
 };
 
+type VitalNode = { top: string; left: string; label: string; metric: string; severity: "alert" | "watch" | "ok" };
+const VITAL_NODES: Record<"full" | "head" | "cardio" | "lower", VitalNode[]> = {
+  full: [
+    { top: "12%", left: "50%", label: "Brain",  metric: "Cognitive screen: WNL",     severity: "ok" },
+    { top: "32%", left: "44%", label: "Heart",  metric: "BP 142/91 · HR 78",         severity: "alert" },
+    { top: "34%", left: "58%", label: "Lungs",  metric: "SpO₂ 98% · RR 16/min",      severity: "ok" },
+    { top: "50%", left: "50%", label: "Spine",  metric: "Posture WNL",               severity: "ok" },
+    { top: "78%", left: "38%", label: "L. Hand",metric: "Grip strength normal",      severity: "ok" },
+    { top: "78%", left: "62%", label: "R. Hand",metric: "Grip strength normal",      severity: "ok" },
+  ],
+  cardio: [
+    { top: "42%", left: "50%", label: "Heart",  metric: "BP 142/91 · HR 78 (elevated)", severity: "alert" },
+    { top: "32%", left: "32%", label: "L. Lung",metric: "Clear · SpO₂ 98%",          severity: "ok" },
+    { top: "32%", left: "68%", label: "R. Lung",metric: "Clear · SpO₂ 98%",          severity: "ok" },
+    { top: "70%", left: "55%", label: "Stomach",metric: "No GI complaints",          severity: "ok" },
+  ],
+  lower: [
+    { top: "10%", left: "50%", label: "Pelvis",   metric: "Alignment normal",        severity: "ok" },
+    { top: "45%", left: "37%", label: "L. Knee",  metric: "Mild stiffness reported", severity: "watch" },
+    { top: "45%", left: "63%", label: "R. Knee",  metric: "Range of motion normal",  severity: "ok" },
+    { top: "92%", left: "40%", label: "L. Foot",  metric: "Sensation intact",        severity: "ok" },
+    { top: "92%", left: "60%", label: "R. Foot",  metric: "Sensation intact",        severity: "ok" },
+  ],
+  head: [
+    { top: "30%", left: "50%", label: "Brain",   metric: "Cognitive screen: WNL",    severity: "ok" },
+    { top: "55%", left: "44%", label: "L. Eye",  metric: "Acuity 20/25",             severity: "watch" },
+    { top: "55%", left: "62%", label: "R. Eye",  metric: "Acuity 20/20",             severity: "ok" },
+    { top: "82%", left: "55%", label: "Jaw",     metric: "Dental records pending",   severity: "ok" },
+  ],
+};
+
+
 function BodyPartStatusIcon({ status }: { status: BodyPartStatus }) {
   if (status === "ok") return <CheckCircle2 className="w-4 h-4 text-success" aria-label="Normal" />;
   if (status === "treated") return <CheckCircle2 className="w-4 h-4 text-warning" aria-label="Treated / watch" />;
@@ -278,15 +310,8 @@ export function PatientSharedContent() {
                       </div>
 
                       {/* Anatomy canvas */}
-                      <div className="relative rounded-2xl border border-border bg-gradient-to-br from-[#1E5AA8]/5 via-white to-[#1E5AA8]/10 overflow-hidden min-h-[520px] flex items-center justify-center p-6">
-                        <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur border border-border text-[11px] font-medium text-[#1E5AA8]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8] animate-pulse" />
-                          {activeRegion === "full" && "Full body view"}
-                          {activeRegion === "cardio" && "Cardio-pulmonary view"}
-                          {activeRegion === "lower" && "Lower body view"}
-                          {activeRegion === "head" && "Head & dental view"}
-                        </div>
-
+                      <div className="relative rounded-2xl border border-border bg-white overflow-hidden min-h-[520px] flex items-center justify-center p-6">
+                        {/* Body image — sits behind the overlays */}
                         <motion.img
                           key={activeRegion}
                           initial={{ opacity: 0, scale: 0.96 }}
@@ -299,12 +324,48 @@ export function PatientSharedContent() {
                             anatomyHead
                           }
                           alt={`Anatomy view: ${activeRegion}`}
-                          className="max-h-[520px] w-auto object-contain drop-shadow-xl"
+                          className="relative z-0 max-h-[520px] w-auto object-contain"
                           loading="lazy"
                         />
 
+                        {/* Region label — above image */}
+                        <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-border text-[11px] font-medium text-[#1E5AA8] shadow-sm">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8] animate-pulse" />
+                          {activeRegion === "full" && "Full body view"}
+                          {activeRegion === "cardio" && "Cardio-pulmonary view"}
+                          {activeRegion === "lower" && "Lower body view"}
+                          {activeRegion === "head" && "Head & dental view"}
+                        </div>
+
+                        {/* Vital nodes — blinking hotspots above the image */}
+                        {(VITAL_NODES[activeRegion] ?? []).map((node, idx) => (
+                          <Tooltip key={`${activeRegion}-${idx}`}>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                aria-label={node.label}
+                                className="absolute z-10 -translate-x-1/2 -translate-y-1/2 group"
+                                style={{ top: node.top, left: node.left }}
+                              >
+                                <span className={`relative flex h-4 w-4 items-center justify-center`}>
+                                  <span className={`absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping ${
+                                    node.severity === "alert" ? "bg-red-500" : node.severity === "watch" ? "bg-amber-500" : "bg-[#1E5AA8]"
+                                  }`} />
+                                  <span className={`relative inline-flex rounded-full h-3 w-3 ring-2 ring-white ${
+                                    node.severity === "alert" ? "bg-red-500" : node.severity === "watch" ? "bg-amber-500" : "bg-[#1E5AA8]"
+                                  }`} />
+                                </span>
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-xs">
+                              <div className="font-semibold">{node.label}</div>
+                              <div className="text-muted-foreground">{node.metric}</div>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+
                         {/* Hover hint */}
-                        <div className="absolute bottom-4 right-4 text-xs text-muted-foreground italic max-w-[180px] text-right">
+                        <div className="absolute bottom-4 right-4 z-20 text-xs text-muted-foreground italic max-w-[180px] text-right">
                           Hover over any vital node<br />to view detailed metrics
                         </div>
                       </div>

@@ -26,6 +26,8 @@ import aiRagAgent from "@/assets/AI-RAG-Agent.webp";
 import avatarSarah from "@/assets/avatar-sarah.jpg";
 import avatarMarcus from "@/assets/avatar-marcus.jpg";
 import avatarPriya from "@/assets/avatar-priya.jpg";
+import avatarJames from "@/assets/avatar-james.jpg";
+import avatarAmara from "@/assets/avatar-amara.jpg";
 
 const features = [
   {
@@ -629,8 +631,8 @@ const Landing = () => {
               { quote: "MediLink cut our patient intake time by 80%. We went from fumbling with paper records to instant digital access.", name: "Dr. Sarah Chen", role: "Cardiologist", avatar: avatarSarah },
               { quote: "The grounded summaries are worth it. We finally have fast answers that cite the underlying records for compliance.", name: "Marcus Williams", role: "Hospital CTO", avatar: avatarMarcus },
               { quote: "Patients love the QR system. They feel in control of their data for the first time.", name: "Dr. Priya Patel", role: "Family medicine", avatar: avatarPriya },
-              { quote: "We replaced three legacy systems with just MediLink. Everything in one place is a game changer for our staff.", name: "James Liu", role: "Clinic administrator", avatar: "https://i.pravatar.cc/300?img=33" },
-              { quote: "The AI summaries are incredibly accurate. I can assess a new patient in under a minute.", name: "Dr. Amara Osei", role: "Emergency medicine", avatar: "https://i.pravatar.cc/300?img=47" },
+              { quote: "We replaced three legacy systems with just MediLink. Everything in one place is a game changer for our staff.", name: "James Liu", role: "Clinic administrator", avatar: avatarJames },
+              { quote: "The AI summaries are incredibly accurate. I can assess a new patient in under a minute.", name: "Dr. Amara Osei", role: "Emergency medicine", avatar: avatarAmara },
             ].map((testimonial, i) => (
               <motion.div key={testimonial.name} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }}>
                 <Card className="h-full overflow-hidden rounded-2xl border-2 border-foreground shadow-sticker-elevated transition-all duration-300 ease-bounce hover:-translate-y-1 hover:-rotate-1">

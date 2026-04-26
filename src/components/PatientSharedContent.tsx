@@ -278,15 +278,8 @@ export function PatientSharedContent() {
                       </div>
 
                       {/* Anatomy canvas */}
-                      <div className="relative rounded-2xl border border-border bg-gradient-to-br from-[#1E5AA8]/5 via-white to-[#1E5AA8]/10 overflow-hidden min-h-[520px] flex items-center justify-center p-6">
-                        <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur border border-border text-[11px] font-medium text-[#1E5AA8]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8] animate-pulse" />
-                          {activeRegion === "full" && "Full body view"}
-                          {activeRegion === "cardio" && "Cardio-pulmonary view"}
-                          {activeRegion === "lower" && "Lower body view"}
-                          {activeRegion === "head" && "Head & dental view"}
-                        </div>
-
+                      <div className="relative rounded-2xl border border-border bg-white overflow-hidden min-h-[520px] flex items-center justify-center p-6">
+                        {/* Body image — sits behind the overlays */}
                         <motion.img
                           key={activeRegion}
                           initial={{ opacity: 0, scale: 0.96 }}
@@ -299,12 +292,48 @@ export function PatientSharedContent() {
                             anatomyHead
                           }
                           alt={`Anatomy view: ${activeRegion}`}
-                          className="max-h-[520px] w-auto object-contain drop-shadow-xl"
+                          className="relative z-0 max-h-[520px] w-auto object-contain"
                           loading="lazy"
                         />
 
+                        {/* Region label — above image */}
+                        <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-border text-[11px] font-medium text-[#1E5AA8] shadow-sm">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#1E5AA8] animate-pulse" />
+                          {activeRegion === "full" && "Full body view"}
+                          {activeRegion === "cardio" && "Cardio-pulmonary view"}
+                          {activeRegion === "lower" && "Lower body view"}
+                          {activeRegion === "head" && "Head & dental view"}
+                        </div>
+
+                        {/* Vital nodes — blinking hotspots above the image */}
+                        {(VITAL_NODES[activeRegion] ?? []).map((node, idx) => (
+                          <Tooltip key={`${activeRegion}-${idx}`}>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                aria-label={node.label}
+                                className="absolute z-10 -translate-x-1/2 -translate-y-1/2 group"
+                                style={{ top: node.top, left: node.left }}
+                              >
+                                <span className={`relative flex h-4 w-4 items-center justify-center`}>
+                                  <span className={`absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping ${
+                                    node.severity === "alert" ? "bg-red-500" : node.severity === "watch" ? "bg-amber-500" : "bg-[#1E5AA8]"
+                                  }`} />
+                                  <span className={`relative inline-flex rounded-full h-3 w-3 ring-2 ring-white ${
+                                    node.severity === "alert" ? "bg-red-500" : node.severity === "watch" ? "bg-amber-500" : "bg-[#1E5AA8]"
+                                  }`} />
+                                </span>
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-xs">
+                              <div className="font-semibold">{node.label}</div>
+                              <div className="text-muted-foreground">{node.metric}</div>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+
                         {/* Hover hint */}
-                        <div className="absolute bottom-4 right-4 text-xs text-muted-foreground italic max-w-[180px] text-right">
+                        <div className="absolute bottom-4 right-4 z-20 text-xs text-muted-foreground italic max-w-[180px] text-right">
                           Hover over any vital node<br />to view detailed metrics
                         </div>
                       </div>

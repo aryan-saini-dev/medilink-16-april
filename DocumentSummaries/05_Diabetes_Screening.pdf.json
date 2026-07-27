@@ -1,0 +1,38 @@
+{
+  "status": "processing_failed",
+  "file_name": "05_Diabetes_Screening.pdf",
+  "report_title": "05 Diabetes Screening",
+  "summary_text": "05 Diabetes Screening\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nProvider: MediLink AI\nDepartment: Document Processing\nType: Pending AI summary\nDate: Jul 27, 2026\nDocument: 05_Diabetes_Screening.pdf\nStatus: AI summary unavailable \u2014 processing failed\n\nChief Complaint: Automatic clinical summary could not be completed\n\nKey Findings:\n- An unexpected error occurred while generating the AI summary.\n- The original document was saved successfully.\n\nAssessment: The document processor could not finish summarization for this upload.\n\nPlan: Please retry later. If the issue continues, verify the file is a valid PDF and the AI service is available.\n\nOrder: Retry AI summarization.\n\nNote: This is a system status summary. Clinical content will appear here once AI processing succeeds.",
+  "structured_data": {
+    "report_title": "05 Diabetes Screening",
+    "provider": "MediLink AI",
+    "department": "Document Processing",
+    "report_type": "Pending AI summary",
+    "report_date": "Jul 27, 2026",
+    "chief_complaint": "Automatic clinical summary could not be completed",
+    "key_findings": [
+      "An unexpected error occurred while generating the AI summary.",
+      "The original document was saved successfully."
+    ],
+    "assessment": "The document processor could not finish summarization for this upload.",
+    "plan": "Please retry later. If the issue continues, verify the file is a valid PDF and the AI service is available.",
+    "orders": "Retry AI summarization."
+  },
+  "metadata": {
+    "provider": "MediLink AI",
+    "department": "Document Processing",
+    "report_type": "Pending AI summary",
+    "report_date": "Jul 27, 2026",
+    "page_count": 1,
+    "character_count": 388,
+    "model": "gemini-2.5-flash",
+    "pipeline": "failed",
+    "failure_reason": "processing_failed",
+    "user_message": "AI summary could not be generated for this document. Please retry later."
+  },
+  "error": "Error calling model 'gemini-2.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}",
+  "error_code": "processing_failed",
+  "user_message": "AI summary could not be generated for this document. Please retry later.",
+  "generated_at": "2026-07-27T17:44:57.355773Z",
+  "source_path": "C:\\Users\\Aryan Gusain\\OneDrive\\Desktop\\medilink-16-april\\Documents\\05_Diabetes_Screening.pdf"
+}

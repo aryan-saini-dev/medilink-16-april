@@ -1,0 +1,36 @@
+{
+  "status": "processed",
+  "file_name": "02_CBC_Routine_Blood_Test.pdf",
+  "report_title": "CBC + Routine Blood Test",
+  "summary_text": "CBC + Routine Blood Test\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nProvider: Precision Diagnostics\nDepartment: Not clearly stated\nType: CBC + Routine Blood Test\nDate: 18 Jan 2025\n\nChief Complaint: Not clearly stated\n\nKey Findings:\n- Hemoglobin 10.8 g/dL\n- Vitamin D 18 ng/mL\n- LDL 148 mg/dL\n\nAssessment: Mild iron deficiency anemia and Vitamin D deficiency.\n\nPlan: Ferrous Sulfate 325 mg OD, Vitamin D3 weekly.\n\nOrder:",
+  "structured_data": {
+    "report_title": "CBC + Routine Blood Test",
+    "provider": "Precision Diagnostics",
+    "department": "Not clearly stated",
+    "report_type": "CBC + Routine Blood Test",
+    "report_date": "18 Jan 2025",
+    "chief_complaint": "Not clearly stated",
+    "key_findings": [
+      "Hemoglobin 10.8 g/dL",
+      "Vitamin D 18 ng/mL",
+      "LDL 148 mg/dL"
+    ],
+    "assessment": "Mild iron deficiency anemia and Vitamin D deficiency.",
+    "plan": "Ferrous Sulfate 325 mg OD, Vitamin D3 weekly.",
+    "orders": ""
+  },
+  "metadata": {
+    "provider": "Precision Diagnostics",
+    "department": "Not clearly stated",
+    "report_type": "CBC + Routine Blood Test",
+    "report_date": "18 Jan 2025",
+    "page_count": 1,
+    "character_count": 396,
+    "model": "gemini-2.5-flash",
+    "pipeline": "pymupdf -> langchain -> structured_json -> medical_summary",
+    "api_key_used": "primary",
+    "fallback_attempted": false
+  },
+  "generated_at": "2026-07-27T17:41:09.088392Z",
+  "source_path": "C:\\Users\\Aryan Gusain\\OneDrive\\Desktop\\medilink-16-april\\Documents\\02_CBC_Routine_Blood_Test.pdf"
+}

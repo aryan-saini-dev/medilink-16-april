@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -24,10 +24,14 @@ import {
   MinusCircle,
   Info,
   ScanLine,
+  Loader2,
 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { EscalationTracker } from "@/components/EscalationTracker";
+import { PatientDocumentsTab } from "@/components/PatientDocumentsTab";
+import { DrugInteractionPanel } from "@/components/DrugInteractionPanel";
+import { useDocuments, documentToTimelineItem, type TimelineItem } from "@/hooks/useDocuments";
 import anatomyFull from "@/assets/anatomy-full.png";
 import anatomyCardio from "@/assets/anatomy-cardio.png";
 import anatomyHead from "@/assets/anatomy-head.png";
@@ -69,10 +73,10 @@ export const MOCK_TIMELINE = [
 ];
 
 export const MOCK_PATIENT = {
-  name: "Jordan Mitchell",
-  age: 34,
+  name: "Rahul Sharma",
+  age: 29,
   gender: "Male",
-  bloodType: "O+",
+  bloodType: "B+",
   allergies: ["Penicillin", "Dust Mites"],
   chronic: ["Hypertension"],
   risk: "yellow" as const,
@@ -154,9 +158,19 @@ function BodyPartStatusIcon({ status }: { status: BodyPartStatus }) {
 }
 
 export function PatientSharedContent() {
-  const [selectedReport, setSelectedReport] = useState<number | null>(null);
+  const [openReport, setOpenReport] = useState<TimelineItem | null>(null);
   const [anatomyViewer, setAnatomyViewer] = useState(false);
   const [activeRegion, setActiveRegion] = useState<"full" | "head" | "cardio" | "lower">("full");
+  const { data: documents, isLoading: documentsLoading } = useDocuments();
+
+  const timeline = useMemo<TimelineItem[]>(() => {
+    const uploaded = (documents ?? []).map(documentToTimelineItem);
+    const mock = MOCK_TIMELINE.map((event, i) => ({
+      ...event,
+      id: `mock-${i}`,
+    }));
+    return [...uploaded, ...mock];
+  }, [documents]);
 
   return (
     <TooltipProvider>
@@ -177,6 +191,9 @@ export function PatientSharedContent() {
             </TabsTrigger>
             <TabsTrigger value="ml" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
               ML Models
+            </TabsTrigger>
+            <TabsTrigger value="documents" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none px-0 py-2 pb-3 mb-[-16px] shadow-none">
+              Documents
             </TabsTrigger>
           </TabsList>
         </div>
@@ -208,7 +225,7 @@ export function PatientSharedContent() {
                 </div>
               </div>
 
-              <div className="bg-card border-2 border-foreground rounded-xl p-5 shadow-sticker">
+              <div className="bg-card border-2 border-foreground rounded-xl p-5 shadow-sticker mb-6">
                 <h3 className="font-display font-bold text-foreground mb-4">Summary</h3>
                 <ul className="space-y-3">
                   {MOCK_PATIENT.summary.map((point, i) => (
@@ -219,6 +236,8 @@ export function PatientSharedContent() {
                   ))}
                 </ul>
               </div>
+
+              <DrugInteractionPanel />
             </motion.div>
           </TabsContent>
 
@@ -473,47 +492,61 @@ export function PatientSharedContent() {
 
         <TabsContent value="history" className="mt-0 outline-none">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-            <div className="space-y-4">
-              {MOCK_TIMELINE.map((event, i) => {
-                const Icon = event.icon;
-                return (
-                  <div key={i} className="flex gap-4 p-4 rounded-xl border-2 border-foreground bg-card transition-colors shadow-pop-soft">
-                    <div className="relative z-10 w-10 h-10 rounded-full bg-primary/10 border-2 border-foreground flex items-center justify-center shrink-0 shadow-pop">
-                      <Icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col justify-center">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-sm font-semibold text-foreground">{event.title}</h3>
-                        <p className="text-xs text-muted-foreground">{event.date}</p>
+            {documentsLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {timeline.map((event) => {
+                  const Icon = event.icon;
+                  return (
+                    <div key={event.id} className="flex gap-4 p-4 rounded-xl border-2 border-foreground bg-card transition-colors shadow-pop-soft">
+                      <div className="relative z-10 w-10 h-10 rounded-full bg-primary/10 border-2 border-foreground flex items-center justify-center shrink-0 shadow-pop">
+                        <Icon className="w-5 h-5 text-primary" />
                       </div>
-                      <p className="text-xs text-muted-foreground flex items-center gap-2">
-                        {event.brief}
-                      </p>
+                      <div className="flex-1 min-w-0 flex flex-col justify-center">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="text-sm font-semibold text-foreground">{event.title}</h3>
+                          <p className="text-xs text-muted-foreground">{event.date}</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground flex items-center gap-2">
+                          {event.brief}
+                        </p>
+                      </div>
+                      <div className="flex items-center ml-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="hidden sm:flex border-2 border-foreground shadow-pop-soft hover:-translate-y-[1px] transition-bounce"
+                          onClick={() => setOpenReport(event)}
+                        >
+                          View Report
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center ml-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="hidden sm:flex border-2 border-foreground shadow-pop-soft hover:-translate-y-[1px] transition-bounce" onClick={() => setSelectedReport(i)}>View Report</Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-md">
-                          <DialogHeader>
-                            <DialogTitle>{event.title} - {event.date}</DialogTitle>
-                          </DialogHeader>
-                          <div className="mt-4">
-                            <pre className="text-xs font-mono text-foreground whitespace-pre-wrap leading-relaxed bg-muted/50 rounded-xl p-4 overflow-auto max-h-[60vh]">
-                              {event.detail}
-                            </pre>
-                            <Button className="w-full mt-4" variant="default">
-                              <Download className="w-4 h-4 mr-2" /> Download PDF PDF
-                            </Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <Dialog open={!!openReport} onOpenChange={(open) => !open && setOpenReport(null)}>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>
+                    {openReport?.title} - {openReport?.date}
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="mt-4">
+                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap leading-relaxed bg-muted/50 rounded-xl p-4 overflow-auto max-h-[60vh]">
+                    {openReport?.detail}
+                  </pre>
+                  <Button className="w-full mt-4" variant="default">
+                    <Download className="w-4 h-4 mr-2" /> Download PDF
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </motion.div>
         </TabsContent>
 
@@ -521,6 +554,10 @@ export function PatientSharedContent() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
             <EscalationTracker />
           </motion.div>
+        </TabsContent>
+
+        <TabsContent value="documents" className="mt-0 outline-none">
+          <PatientDocumentsTab />
         </TabsContent>
 
         <TabsContent value="ml" className="mt-0 outline-none">

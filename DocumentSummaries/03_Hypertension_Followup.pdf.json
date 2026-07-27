@@ -1,0 +1,35 @@
+{
+  "status": "processed",
+  "file_name": "03_Hypertension_Followup.pdf",
+  "report_title": "Hypertension Follow-up",
+  "summary_text": "Hypertension Follow-up\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nProvider: City Care Hospital\nDepartment: Not clearly stated\nType: Hypertension Follow-up\nDate: 10 Feb 2025\n\nChief Complaint: Hypertension follow-up\n\nKey Findings:\n- BP 158/96 mmHg\n- Diagnosis: Stage I Hypertension\n\nAssessment: Stage I Hypertension\n\nPlan: New Prescription: Amlodipine 5 mg OD\n\nOrder:",
+  "structured_data": {
+    "report_title": "Hypertension Follow-up",
+    "provider": "City Care Hospital",
+    "department": "Not clearly stated",
+    "report_type": "Hypertension Follow-up",
+    "report_date": "10 Feb 2025",
+    "chief_complaint": "Hypertension follow-up",
+    "key_findings": [
+      "BP 158/96 mmHg",
+      "Diagnosis: Stage I Hypertension"
+    ],
+    "assessment": "Stage I Hypertension",
+    "plan": "New Prescription: Amlodipine 5 mg OD",
+    "orders": ""
+  },
+  "metadata": {
+    "provider": "City Care Hospital",
+    "department": "Not clearly stated",
+    "report_type": "Hypertension Follow-up",
+    "report_date": "10 Feb 2025",
+    "page_count": 1,
+    "character_count": 334,
+    "model": "gemini-2.5-flash",
+    "pipeline": "pymupdf -> langchain -> structured_json -> medical_summary",
+    "api_key_used": "primary",
+    "fallback_attempted": false
+  },
+  "generated_at": "2026-07-27T17:41:16.909278Z",
+  "source_path": "C:\\Users\\Aryan Gusain\\OneDrive\\Desktop\\medilink-16-april\\Documents\\03_Hypertension_Followup.pdf"
+}

@@ -1,0 +1,39 @@
+{
+  "status": "processed",
+  "file_name": "01_Annual_Health_Checkup.pdf",
+  "report_title": "Annual Health Checkup",
+  "summary_text": "Annual Health Checkup\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nProvider: City Care Hospital\nDepartment: Not clearly stated\nType: Annual Health Checkup\nDate: 15 Jan 2025\n\nChief Complaint: Annual Health Checkup\n\nKey Findings:\n- BP: 146/92 mmHg\n- HR: 82 bpm\n- Weight: 92 kg\n- Height: 174 cm\n- BMI: 30.4\n- Family History: Father: Hypertension. Mother: Type 2 Diabetes.\n\nAssessment: Borderline hypertension and obesity.\n\nPlan: Not clearly stated\n\nOrder:",
+  "structured_data": {
+    "report_title": "Annual Health Checkup",
+    "provider": "City Care Hospital",
+    "department": "Not clearly stated",
+    "report_type": "Annual Health Checkup",
+    "report_date": "15 Jan 2025",
+    "chief_complaint": "Annual Health Checkup",
+    "key_findings": [
+      "BP: 146/92 mmHg",
+      "HR: 82 bpm",
+      "Weight: 92 kg",
+      "Height: 174 cm",
+      "BMI: 30.4",
+      "Family History: Father: Hypertension. Mother: Type 2 Diabetes."
+    ],
+    "assessment": "Borderline hypertension and obesity.",
+    "plan": "Not clearly stated",
+    "orders": ""
+  },
+  "metadata": {
+    "provider": "City Care Hospital",
+    "department": "Not clearly stated",
+    "report_type": "Annual Health Checkup",
+    "report_date": "15 Jan 2025",
+    "page_count": 1,
+    "character_count": 413,
+    "model": "gemini-2.5-flash",
+    "pipeline": "pymupdf -> langchain -> structured_json -> medical_summary",
+    "api_key_used": "primary",
+    "fallback_attempted": false
+  },
+  "generated_at": "2026-07-27T17:41:01.607059Z",
+  "source_path": "C:\\Users\\Aryan Gusain\\OneDrive\\Desktop\\medilink-16-april\\Documents\\01_Annual_Health_Checkup.pdf"
+}

@@ -1,0 +1,7 @@
+PyMuPDF
+python-dotenv
+langchain
+langchain-core
+langchain-google-genai
+pydantic
+clinical-ddi-check

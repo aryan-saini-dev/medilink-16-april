@@ -1,0 +1,34 @@
+{
+  "status": "checked",
+  "generated_at": "2026-07-27T17:46:24.602179Z",
+  "summaries_scanned": 6,
+  "medications": [
+    "vitamin d",
+    "amlodipine"
+  ],
+  "medications_raw": [
+    "Vitamin D",
+    "Amlodipine 5 mg"
+  ],
+  "sources": [
+    {
+      "file_name": "02_CBC_Routine_Blood_Test.pdf",
+      "report_title": "CBC + Routine Blood Test",
+      "medications": [
+        "Vitamin D"
+      ]
+    },
+    {
+      "file_name": "03_Hypertension_Followup.pdf",
+      "report_title": "Hypertension Follow-up",
+      "medications": [
+        "Amlodipine 5 mg"
+      ]
+    }
+  ],
+  "interactions": [],
+  "count": 0,
+  "has_major_or_contraindicated": false,
+  "flags": [],
+  "message": "No drug-drug interactions flagged across 2 medication(s)."
+}

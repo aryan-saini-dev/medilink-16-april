@@ -9,23 +9,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import { useUploadDocuments } from "@/hooks/useDocuments";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function PatientDashboard() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState<string | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const uploadDocuments = useUploadDocuments();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const checkAuth = async () => {
       const mockAuth = sessionStorage.getItem("patient_authenticated");
       const { data: { session } } = await supabase.auth.getSession();
 
-      if (mockAuth === "true" || session) {
-        if (session?.user?.user_metadata?.full_name) {
-          setUserName(session.user.user_metadata.full_name);
-        }
-      } else {
+      if (mockAuth !== "true" && !session) {
         navigate("/patient-login");
       }
     };
@@ -38,16 +37,30 @@ export default function PatientDashboard() {
     navigate("/patient-login");
   };
 
-  const handleMockUpload = () => {
+  const handleUpload = async () => {
     if (!selectedFiles.length) {
-      toast({ title: "No files selected", description: "Choose a file to upload (mock)." });
+      toast({ title: "No files selected", description: "Choose a file to upload." });
       return;
     }
-    toast({
-      title: "Upload queued (mock)",
-      description: `${selectedFiles.length} document${selectedFiles.length === 1 ? "" : "s"} added to your record inbox.`,
-    });
-    setUploadOpen(false);
+    try {
+      const result = await uploadDocuments.mutateAsync(selectedFiles);
+      const failed = result.processing?.filter((item) => !item.ok) ?? [];
+      await queryClient.invalidateQueries({ queryKey: ["drug-interactions"] });
+      toast({
+        title: failed.length ? "Upload complete with warnings" : "Upload complete",
+        description: failed.length
+          ? `${result.count} document${result.count === 1 ? "" : "s"} saved. ${failed.length} summary${failed.length === 1 ? "" : "ies"} could not be generated automatically.`
+          : `${result.count} document${result.count === 1 ? "" : "s"} saved to your records.`,
+      });
+      setSelectedFiles([]);
+      setUploadOpen(false);
+    } catch {
+      toast({
+        title: "Upload failed",
+        description: "Could not save documents. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -68,7 +81,7 @@ export default function PatientDashboard() {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
-                  <h1 className="text-2xl font-display font-bold text-foreground">{userName || MOCK_PATIENT.name}</h1>
+                  <h1 className="text-2xl font-display font-bold text-foreground">{MOCK_PATIENT.name}</h1>
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 border-2 border-amber-500/20 flex items-center gap-1">
                     <Activity className="w-3 h-3" /> Risk: Moderate
                   </span>
@@ -104,13 +117,13 @@ export default function PatientDashboard() {
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
                     <DialogHeader>
-                      <DialogTitle>Upload documents (mock)</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-3">
-                      <div className="rounded-xl border-2 border-foreground bg-muted/40 p-3 shadow-pop-soft">
-                        <p className="text-sm font-medium text-foreground mb-1">Add files to your record inbox</p>
-                        <p className="text-xs text-muted-foreground">This is a UI mock only — nothing is stored yet.</p>
-                      </div>
+                    <DialogTitle>Upload documents</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-3">
+                    <div className="rounded-xl border-2 border-foreground bg-muted/40 p-3 shadow-pop-soft">
+                      <p className="text-sm font-medium text-foreground mb-1">Add files to your record inbox</p>
+                      <p className="text-xs text-muted-foreground">Files are saved to your Documents folder and appear in the Documents tab.</p>
+                    </div>
 
                       <div className="space-y-1.5">
                         <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Select files</label>
@@ -127,8 +140,8 @@ export default function PatientDashboard() {
                       </div>
 
                       <div className="flex gap-2">
-                        <Button className="flex-1" onClick={handleMockUpload}>
-                          Add to inbox
+                        <Button className="flex-1" onClick={handleUpload} disabled={uploadDocuments.isPending}>
+                          {uploadDocuments.isPending ? "Uploading…" : "Add to inbox"}
                         </Button>
                         <Button variant="outline" className="flex-1" onClick={() => setUploadOpen(false)}>
                           Cancel
@@ -146,7 +159,7 @@ export default function PatientDashboard() {
 
       <AIChatPanel
         audience="patient"
-        patientName={(userName || MOCK_PATIENT.name).split(" ")[0]}
+        patientName={MOCK_PATIENT.name.split(" ")[0]}
         floating
       />
     </div>
